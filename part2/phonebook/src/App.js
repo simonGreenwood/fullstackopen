@@ -22,7 +22,14 @@ const App = () => {
     if (persons.filter(person => person.name==newName).length==0) {
       const data = {"name":newName, "number":newNumber}
       console.log(data)
-      phoneservice.createPerson(data).then(phoneservice.getPersons().then(persons => setPersons(persons)))
+      phoneservice.createPerson(data)
+        .catch(error => {
+        console.log(error)
+          setError(true)
+          setNotification(error.response.data.error)
+          setTimeout(() => setNotification(null), 2000)
+        })
+      setPersons(persons.concat(data))
       setError(false)
       setNotification(`Added ${newName}`)
       setTimeout(() => setNotification(null), 2000)
@@ -35,7 +42,7 @@ const App = () => {
       phoneservice
         .editPerson(person._id, changedPerson)
         .then(() => {
-          phoneservice.getPersons().then(data => setPersons(data))
+          setPersons(persons.map(p=> p.id !== person.id ? person : changedPerson))
           setNewName('')
           setNewNumber('')
           setError(false)
@@ -52,12 +59,12 @@ const App = () => {
     if(!window.confirm(`Are you sure you want to delete ${person.name} from the phonebook?`)) return
     phoneservice
     .deletePerson(person._id)
-    .catch((error) => {
+    .catch(error => {
       setError(true)
       setNotification(`${person.name} has already been removed from the server!`)
       setTimeout(() => setNotification(null), 2000)
-    })
-    phoneservice.getPersons().then(response => setPersons(response)) 
+    }) 
+    
   }
   return (
     <div>
