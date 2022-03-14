@@ -5,7 +5,7 @@ const Numbers = ({persons, activeFilter, onDelete}) => {
     <div>
       {persons
         .filter(person => person.name.toLowerCase().startsWith(activeFilter.toLowerCase()))
-        .map(person=><Contact person={person} key={person._id} onDelete={(p) => onDelete(p)}/>)}
+        .map(person=><Contact person={person} key={person.id} onDelete={(p) => onDelete(p)}/>)}
     </div>
   )
 }

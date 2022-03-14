@@ -16,49 +16,60 @@ const App = () => {
     phoneservice.getPersons().then(data => setPersons(data))
   }
   useEffect(hook,[])
-
-  const handleSubmit = (event) => {
-    event.preventDefault() 
-    if (persons.filter(person => person.name==newName).length==0) {
-      const data = {"name":newName, "number":newNumber}
+  const addUser = () => {
+    const data = {"name":newName, "number":newNumber}
+    console.log(data)
+    phoneservice.createPerson(data).then(data => {
       console.log(data)
-      phoneservice.createPerson(data)
-        .catch(error => {
-        console.log(error)
-          setError(true)
-          setNotification(error.response.data.error)
-          setTimeout(() => setNotification(null), 2000)
-        })
       setPersons(persons.concat(data))
       setError(false)
-      setNotification(`Added ${newName}`)
+      setNotification(`Added ${data.name}`)
       setTimeout(() => setNotification(null), 2000)
       setNewName('')
       setNewNumber('')
-    } else {
-      if (!window.confirm(`${newName} is already in the phonebook. Replace their phone number?`)) return
-      const person = persons.find(p => p.name === newName)
-      const changedPerson = { ...person, number: newNumber }
-      phoneservice
-        .editPerson(person._id, changedPerson)
-        .then(() => {
-          setPersons(persons.map(p=> p.id !== person.id ? person : changedPerson))
-          setNewName('')
-          setNewNumber('')
-          setError(false)
-          setNotification(`Edited ${changedPerson.name}'s phone number to ${changedPerson.number}`)
-          setTimeout(() => setNotification(null), 2000)
-        }).catch(() => {
-          setError(true)
-          setNotification(`${person.name} has already been removed from the server!`)
-          setTimeout(() => setNotification(null), 2000)
-        })
-      }
+    })
+    .catch(error => {
+      console.log(error)
+      setError(true)
+      setNotification(error.response.data.error)
+      setTimeout(() => setNotification(null), 2000)
+    })
+  }
+  const updateUser = () => {
+    if (!window.confirm(`${newName} is already in the phonebook. Replace their phone number?`)) return
+    const person = persons.find(p => p.name === newName)
+    const changedPerson = { ...person, number: newNumber }
+    phoneservice
+    .editPerson(person.id, changedPerson)
+    .then(data => {
+      console.log(data)
+      setPersons(persons.map(p => p.id !== data.id ? p : data))
+      setNewName('')
+      setNewNumber('')
+      setError(false)
+      setNotification(`Edited ${data.name}'s phone number to ${data.number}`)
+      setTimeout(() => setNotification(null), 2000)
+    })
+    .catch(error => {
+      setError(true)
+      setNotification(`${person.name} has already been removed from the server!`)
+      setTimeout(() => setNotification(null), 2000)
+    })
+  }
+  const handleSubmit = (event) => { 
+    event.preventDefault() 
+    if (persons.filter(person => person.name==newName).length==0) {
+      addUser()
+    } 
+    else {
+      updateUser()
+    }
   }
   const handleDelete = (person) => {
     if(!window.confirm(`Are you sure you want to delete ${person.name} from the phonebook?`)) return
     phoneservice
-    .deletePerson(person._id)
+    .deletePerson(person.id)
+    .then(() => console.log(persons,persons.map(p=>p.id!=person.id)))
     .catch(error => {
       setError(true)
       setNotification(`${person.name} has already been removed from the server!`)
