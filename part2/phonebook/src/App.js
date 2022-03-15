@@ -51,7 +51,13 @@ const App = () => {
       setTimeout(() => setNotification(null), 2000)
     })
     .catch(error => {
+      console.log(error)
       setError(true)
+      if (error.startsWith('Validation error:')) {
+        setNotification(error)
+        setTimeout(() => setNotification(null), 2000)
+        return 
+      }
       setNotification(`${person.name} has already been removed from the server!`)
       setTimeout(() => setNotification(null), 2000)
     })
@@ -69,7 +75,7 @@ const App = () => {
     if(!window.confirm(`Are you sure you want to delete ${person.name} from the phonebook?`)) return
     phoneservice
     .deletePerson(person.id)
-    .then(() => console.log(persons,persons.map(p=>p.id!=person.id)))
+    .then(() => setPersons(persons.filter(p=>p.id!=person.id)))
     .catch(error => {
       setError(true)
       setNotification(`${person.name} has already been removed from the server!`)
