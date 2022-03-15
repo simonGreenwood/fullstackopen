@@ -64,7 +64,7 @@ const App = () => {
   }
   const handleSubmit = (event) => { 
     event.preventDefault() 
-    if (persons.filter(person => person.name==newName).length==0) {
+    if (persons.filter(person => person.name===newName).length===0) {
       addUser()
     } 
     else {
@@ -75,7 +75,7 @@ const App = () => {
     if(!window.confirm(`Are you sure you want to delete ${person.name} from the phonebook?`)) return
     phoneservice
     .deletePerson(person.id)
-    .then(() => setPersons(persons.filter(p=>p.id!=person.id)))
+    .then(() => setPersons(persons.filter(p=>p.id!==person.id)))
     .catch(error => {
       setError(true)
       setNotification(`${person.name} has already been removed from the server!`)
