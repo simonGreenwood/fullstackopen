@@ -4,10 +4,17 @@ const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
 
-const Blog = require('./models/Blog')
-const { info,error } = require('./utils/logger.js')
-const config = require('./utils/config.js')
-mongoose.connect(config.MONGODB_URI).then(() => info('Connected to MongoDB'))
+const blogSchema = new mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number
+})
+
+const Blog = mongoose.model('Blog', blogSchema)
+
+const mongoUrl = 'mongodb://127.0.0.1:27017/fullstack-blog'
+mongoose.connect(mongoUrl)
 
 app.use(cors())
 app.use(express.json())
@@ -30,6 +37,7 @@ app.post('/api/blogs', (request, response) => {
     })
 })
 
-app.listen(config.PORT, () => {
-  info(`Server running on port ${config.PORT}`)
+const PORT = 3003
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
 })

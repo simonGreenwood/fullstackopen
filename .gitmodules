@@ -1,3 +1,6 @@
 [submodule "part3"]
 	path = part3
 	url = https://github.com/simonGreenwood/fullstackopen-part3
+[submodule "part3-notes-backend"]
+	path = part3-notes-backend
+	url = https://github.com/simonGreenwood/part3-notes-backend/
