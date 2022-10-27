@@ -62,4 +62,12 @@ describe('blog tests', () => {
     const blogs = await api.get('/api/blogs')
     expect(blogs.body[blogs.body.length - 1].likes).toBe(0)
   })
+  test("if title and url are missing, return 400", async () => {  
+    const newBlog = {
+      "author": "simon"
+    }
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
 })
