@@ -3,10 +3,10 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
-const Blog = require('./models/Blog')
+const Blog = require('./models/blog')
 const blogRouter = require('./controllers/blog')
-const mongoUrl = 'mongodb://127.0.0.1:27017/fullstack-blog'
-mongoose.connect(mongoUrl)
+const config = require('./utils/config')
+mongoose.connect(config.MONGODB_URI)
 
 app.use(cors())
 app.use(express.json())
