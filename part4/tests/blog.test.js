@@ -37,6 +37,7 @@ describe('blog tests', () => {
       likes: 420
 
     }
+    
     await api.post('/api/blogs')
       .send(newBlog)
       .expect(201)
@@ -44,8 +45,21 @@ describe('blog tests', () => {
 
     const blogs = await api.get('/api/blogs')
     expect(blogs.body).toHaveLength(helper.initialBlogs.length + 1)
-    expect(blogs.body.Promisemap(blog => blog.title)).toContain("test blog")
+    expect(blogs.body.map(blog => blog.title)).toContain("test blog")
 
 
+  })
+  test("if likes is missing, default to 0", async () => {
+    const newBlog = {
+      title: "test blog",
+      author: "simon",
+      url: "www.example.com",
+    }
+    await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+    const blogs = await api.get('/api/blogs')
+    expect(blogs.body[blogs.body.length - 1].likes).toBe(0)
   })
 })

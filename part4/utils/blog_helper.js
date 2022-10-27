@@ -48,6 +48,7 @@ const initialBlogs = [
     __v: 0
   }  
 ]
+
 module.exports = {
-  initialBlogs
+  initialBlogs,
 }
