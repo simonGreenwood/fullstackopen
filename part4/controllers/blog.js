@@ -25,15 +25,10 @@ blogRouter.delete('/:id', async (request, response, next) => {
     response.status(400).end()
   }
 })
-const errorHandler = (error, request, response, next) => {
-  console.log(error.name)
-}
 
 // handler of requests with result to errors
-blogRouter.use(errorHandler)
 
 blogRouter.put('/:id', async (request, response, next) => {
-  const body = request.body
   const blog = {
     title: request.body.title,
     author: request.body.author,
@@ -42,11 +37,15 @@ blogRouter.put('/:id', async (request, response, next) => {
   }
   try {
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
+    if (!updatedBlog) {
+      response.status(400).end()
+      return
+    }
+    console.log(updatedBlog)
     response.status(200).json(updatedBlog).end()
   }
   catch (exception) {
     response.status(400).end()
-    next(exception)
   }
 })
 module.exports = blogRouter
