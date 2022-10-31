@@ -25,5 +25,39 @@ test('create a user', async () => {
   expect(response.body.username).toBe('test')
   expect(response.body.name).toBe('test')
   expect(response.body.passwordHash).toBe(undefined)
-  
+})
+
+
+test('create a user with no username', async () => {
+  const response = await api.post('/api/users')
+    .send({
+        name: 'test',
+        password: 'test'
+    })
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+  expect(response.body.error).toBe('username or password missing')
+})
+describe('length is too short', () => {
+  test('username is too short', async () => {
+    await api.post('/api/users')
+      .send({
+        username: 'te',
+        name: 'test',
+        password: 'test'
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+  test('password length is too short',() => {
+    api.post('/api/users')
+      .send({
+          username: 'test',
+          name: 'test',
+          password: 'te'
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+      .expect({error: 'password must be at least 3 characters long'})
+  })
 })
