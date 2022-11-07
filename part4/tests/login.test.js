@@ -38,6 +38,29 @@ test('create a user with no username', async () => {
     .expect('Content-Type', /application\/json/)
   expect(response.body.error).toBe('username or password missing')
 })
+test('create a user with no password', async () => {
+  const response = await api.post('/api/users')
+    .send({
+        username: 'test',
+        name: 'test',
+    })
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+  expect(response.body.error).toBe('username or password missing')
+})
+
+test('get all users',() => {
+  api.get('/api/users')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+    .expect(response => {
+      expect(response.body.length).toBe(1)
+      expect(response.body[0].username).toBe('root')
+      expect(response.body[0].name).toBe('root')
+      expect(response.body[0].passwordHash).toBe(undefined)
+    })
+})
+
 describe('length is too short', () => {
   test('username is too short', async () => {
     await api.post('/api/users')
