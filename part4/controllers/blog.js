@@ -15,19 +15,22 @@ blogRouter.post('/', async (request, response) => {
     return 
   }
   const {title, author, url, likes} = request.body
+  const user = await User.findOne()  
+  const id = user._id                 
   const blog = new Blog({
     title,
     author,
     url,
     likes: likes || 0,
-    user: []
+    user: id
   })
-  console.log(await blog.populate('user', User.findOne().toJSON()))
-  const result = await blog.save()
-  const users = await User
-    .find({})
-  console.log(users)
-  response.status(201).json(result)
+  await blog.populate('user', {username: 1, name: 1, id: 1})
+  const savedBlog = await blog.save()
+
+  user.blogs = user.blogs.concat(savedBlog._id)
+  const savedUser = await user.save()
+  await savedUser.populate('blogs', {title: 1, author: 1, url: 1, likes: 1, id: 1})
+  response.status(201).json(savedBlog.toJSON())
 })
 
 
