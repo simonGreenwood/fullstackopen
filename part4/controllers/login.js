@@ -4,12 +4,6 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const app = require('../app')
 
-/* const errorHandler = (error,request,response,next) => {
-  console.error(error.name,error.message)
-  console.log(error.name)
-  console.log('something else')
-  next(error)
-} */
 loginRouter.post('/', async (request, response,next) => {
   const {username, name, password} = request.body
   if(!username || !password){
@@ -36,7 +30,7 @@ loginRouter.post('/', async (request, response,next) => {
 })
 
 loginRouter.get('/', async (request, response) => {
-  const users = await User.find({})
+  const users = await User.find({}).populate('blogs', {title: 1, author: 1, url: 1, likes: 1, id: 1})
   response.json(users.map(user => user.toJSON())).status(200)
 })
 module.exports = loginRouter
