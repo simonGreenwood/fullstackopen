@@ -25,6 +25,7 @@ test('login as user', async () => {
   expect(response.body.name).toBe('root')
   expect(response.body.passwordHash).toBe(undefined)
   const user = await User.findOne({username:'root'})
+  console.log(response.body.token)
   const passwordCorrect = user === null
   ? false
   : await bcrypt.compare('sekret', user.passwordHash)
