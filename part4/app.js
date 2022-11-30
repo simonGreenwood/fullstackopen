@@ -5,22 +5,16 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const Blog = require('./models/blog')
 const blogRouter = require('./controllers/blog')
+const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
-
 const config = require('./utils/config')
 mongoose.connect(config.MONGODB_URI)
 
 app.use(cors())
 app.use(express.json())
 
-const errorHandler = (error,request,response,next) => {
-  console.error(error.name,error.message)
-  console.log(error.name)
-  console.log('something else')
-  next(error)
-}
-app.use(errorHandler)
+app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogRouter)
-app.use('/api/users', loginRouter)
+app.use('/api/users', usersRouter)
 
 module.exports = app
