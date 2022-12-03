@@ -3,7 +3,9 @@ const app = require('../app')
 const api = supertest(app)
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const Blog = require('../models/blog')
 const bcrypt = require('bcrypt')
+const helper = require('../utils/blog_helper')
 beforeEach(async () => {
   await User.deleteMany({})
   
@@ -31,3 +33,31 @@ test('login as user', async () => {
   : await bcrypt.compare('sekret', user.passwordHash)
   expect(passwordCorrect).toBe(true)
 })
+/*
+test('create a blog with token', async () => {
+  const response = await api.post('/api/login')
+    .send({
+        username: 'root',
+        name: "root",
+        password: 'sekret'
+    })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const token = response.body.token
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  console.log(decodedToken)
+  const blog = {
+    title: 'test blog',
+    author: "simon",
+    url: "www.exampleee.com",
+    likes: 1   
+  }
+  await api.post('/api/blogs')
+    .set('Authorization', `bearer ${token}`)
+    .send(blog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  const blogsAtEnd = await Blog.find({})
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+})*/

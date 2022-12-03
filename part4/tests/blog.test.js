@@ -1,5 +1,6 @@
 const helper = require('../utils/blog_helper')
 const Blog = require('../models/blog')
+const jwt = require('jsonwebtoken')
 
 const supertest = require("supertest")
 const app = require("../app")
@@ -29,25 +30,32 @@ describe('blog tests', () => {
     expect(response.body[0].id).toBeDefined()
   })
 
-  test("create a new blog", async () => {
-    const newBlog = {
-      title: "test blog",
+  test('create a blog with token', async () => {
+    const response = await api.post('/api/login')
+      .send({
+          username: 'root',
+          name: "root",
+          password: 'sekret'
+      })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  
+    const token = response.body.token
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    console.log(decodedToken)
+    const blog = {
+      title: 'test blog',
       author: "simon",
-      url: "www.example.com",
-      likes: 420
-
+      url: "www.exampleee.com",
+      likes: 1   
     }
-    
     await api.post('/api/blogs')
-      .send(newBlog)
+      .set('Authorization', `bearer ${token}`)
+      .send(blog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
-
-    const blogs = await api.get('/api/blogs')
-    expect(blogs.body).toHaveLength(helper.initialBlogs.length + 1)
-    expect(blogs.body.map(blog => blog.title)).toContain("test blog")
-
-
+    const blogsAtEnd = await Blog.find({})
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
   })
   test("if likes is missing, default to 0", async () => {
     const newBlog = {
