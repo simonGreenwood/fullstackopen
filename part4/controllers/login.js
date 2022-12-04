@@ -3,14 +3,6 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const app = require('../app')
-const getTokenFrom = (request) => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
 loginRouter.post('/', async (request, response,next) => {
   const { username, password } = request.body
   const user = await User.findOne({username})
