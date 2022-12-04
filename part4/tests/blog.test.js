@@ -31,16 +31,18 @@ describe('blog tests', () => {
   })
 
   test('create a blog with token', async () => {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYzOGIwOTI0NmI3ZTkzNmJiOTZjOWNmNiIsImlhdCI6MTY3MDA1NjIyOH0.WyZ0lenYJqskOqRAHAEEqoo-iKoKzGFXbExlhuVIfGw"
     const response = await api.post('/api/login')
       .send({
           username: 'root',
           name: "root",
           password: 'sekret'
       })
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-  
-    const token = response.body.token
+    
+    console.log(response.body)
     const decodedToken = jwt.verify(token, process.env.SECRET)
     console.log(decodedToken)
     const blog = {
