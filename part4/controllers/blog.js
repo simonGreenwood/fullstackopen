@@ -10,12 +10,6 @@ blogRouter.get('/', async (request, response) => {
 })
 
 blogRouter.post('/', async (request, response) => {
-  console.log(request.token)
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  console.log(decodedToken)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
 
   if (request.body.title ===undefined || request.body.url===undefined) {
     response.status(400).json({error: 'title or url missing'})
@@ -23,7 +17,7 @@ blogRouter.post('/', async (request, response) => {
   }
   const {title, author, url, likes} = request.body
   
-  const user = await User.findOne({username:decodedToken.username, id:decodedToken.id})
+  const user = await User.findOne({username:request.user.username, id:request.user.id})
   
   const id = user._id                 
   const blog = new Blog({
