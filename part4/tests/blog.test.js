@@ -112,7 +112,6 @@ describe('deletion of a blog', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
     const decodedToken = jwt.verify(token, process.env.SECRET)
-    console.log(decodedToken)
     const blog = new Blog({
       title: 'test blog',
       author: "simon",
@@ -124,7 +123,6 @@ describe('deletion of a blog', () => {
     await api.delete(`/api/blogs/${target.id}`)
       .set('Authorization', `bearer ${token}`)
       .expect(204)
-
     const after = await Blog.find({})
     expect(after).toHaveLength(startingBlogs.length - 1)
     expect(after).not.toContain(target)

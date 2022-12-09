@@ -39,18 +39,16 @@ blogRouter.post('/', async (request, response) => {
 
 
 blogRouter.delete('/:id', async (request, response, next) => {
-  console.log(request.user)
-  console.log(await Blog.findById(request.params.id))
-  try {
-    Blog.findByIdAndRemove(request.params.id)
-    if (!updatedBlog) {
-      response.status(400).end()
-      return
+  const blog = await Blog.findById(request.params.id)
+  if (blog.user.toString() === request.user.id) {
+    try {
+      await Blog.findByIdAndRemove(request.params.id)
+      return response.status(204).end()
+    } catch (exception) {
+      return response.status(400).end()
     }
-    response.status(204).end()
-  } catch (exception) {
-    response.status(400).end()
   }
+  return response.status(401).end()
 })
 
 // handler of requests with result to errors
