@@ -45,7 +45,7 @@ describe('blog tests', () => {
     }
     const token = jwt.sign(userForToken,process.env.SECRET)
     console.log(token)
-    const response = await api.post('/api/login')
+    await api.post('/api/login')
       .send({
           username: 'root',
           name: "root",
@@ -54,8 +54,6 @@ describe('blog tests', () => {
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    console.log(decodedToken)
     const blog = {
       title: 'test blog',
       author: "simon",
@@ -69,6 +67,29 @@ describe('blog tests', () => {
       .expect('Content-Type', /application\/json/)
     const blogsAtEnd = await Blog.find({})
     expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+  })
+  test("create a blog returns 401 if no token", async () => {
+    const blog = {
+      title: 'test blog',
+      author: "simon",
+      url: "www.exampleee.com",
+      likes: 1   
+    }
+    await api.post('/api/blogs')
+    .send(blog)
+    .expect(401)
+  })
+  test("create a blog returns 401 if invalid token", async () => {
+    const blog = {
+      title: 'test blog',
+      author: "simon",
+      url: "www.exampleee.com",
+      likes: 1   
+    }
+    await api.post('/api/blogs')
+    .set("Authorization",`bearer invalidtoken`)
+    .send(blog)
+    .expect(401)
   })
   test("if likes is missing, default to 0", async () => {
     const newBlog = {
@@ -102,7 +123,7 @@ describe('deletion of a blog', () => {
     }
     const token = jwt.sign(userForToken,process.env.SECRET)
     console.log(token)
-    const response = await api.post('/api/login')
+    await api.post('/api/login')
       .send({
           username: 'root',
           name: "root",
@@ -111,7 +132,6 @@ describe('deletion of a blog', () => {
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-    const decodedToken = jwt.verify(token, process.env.SECRET)
     const blog = new Blog({
       title: 'test blog',
       author: "simon",
@@ -120,17 +140,40 @@ describe('deletion of a blog', () => {
       likes: 1   
     })
     const target = await blog.save()
+    const startingBlogs = await Blog.find({})
     await api.delete(`/api/blogs/${target.id}`)
       .set('Authorization', `bearer ${token}`)
       .expect(204)
     const after = await Blog.find({})
+
     expect(after).toHaveLength(startingBlogs.length - 1)
     expect(after).not.toContain(target)
   })
-  
+  test("delete a blog returns 401 if no token", async () => {
+    const blog = new Blog({
+      title: 'test blog',
+      author: "simon",
+      url: "www.exampleee.com",
+      likes: 1   
+    })
+    const target = await blog.save()
+    await api.delete(`/api/blogs/${target.id}`)
+      .expect(401)
+  })
+  test("delete a blog returns 401 if invalid token", async () => {
+    const blog = new Blog({
+      title: 'test blog',
+      author: "simon",
+      url: "www.exampleee.com",
+      likes: 1   
+    })
+    const target = await blog.save()
+    await api.delete(`/api/blogs/${target.id}`)
+      .set("Authorization",`bearer invalidtoken`)
+      .expect(401)
+  })
   test('fails with status code 400 if id is invalid', async () => {
-    await api
-      .delete(`/api/blogs/invalidid`)
+    await api.delete(`/api/blogs/invalidid`)
       .expect(400)
       
   },100000)

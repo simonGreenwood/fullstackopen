@@ -10,7 +10,9 @@ blogRouter.get('/', async (request, response) => {
 })
 
 blogRouter.post('/', async (request, response) => {
-
+  if (!request.user) {
+    return response.status(401).json({error:"invalid token"})
+  }
   if (request.body.title ===undefined || request.body.url===undefined) {
     response.status(400).json({error: 'title or url missing'})
     return 
@@ -39,7 +41,13 @@ blogRouter.post('/', async (request, response) => {
 
 
 blogRouter.delete('/:id', async (request, response, next) => {
+  if (!request.user) {
+    return response.status(401).json({error:"invalid token"})
+  }
   const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    console.log("Invalid blog!")
+  }
   if (blog.user.toString() === request.user.id) {
     try {
       await Blog.findByIdAndRemove(request.params.id)
