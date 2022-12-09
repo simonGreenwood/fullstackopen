@@ -95,9 +95,24 @@ describe('blog tests', () => {
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({username: 'root', name: 'root', passwordHash: passwordHash})
-    await user.save()
+    const user = await User.findOne({})
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    }
+    const token = jwt.sign(userForToken,process.env.SECRET)
+    console.log(token)
+    const response = await api.post('/api/login')
+      .send({
+          username: 'root',
+          name: "root",
+          password: 'sekret'
+      })
+      .set("Authorization", "Bearer " + token)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    console.log(decodedToken)
     const blog = new Blog({
       title: 'test blog',
       author: "simon",
@@ -105,11 +120,9 @@ describe('deletion of a blog', () => {
       user: user._id,
       likes: 1   
     })
-    const saved = await blog.save()
-    console.log(saved.user === user._id)
-
-    await api
-      .delete(`/api/blogs/${saved.id}`)
+    const target = await blog.save()
+    await api.delete(`/api/blogs/${target.id}`)
+      .set('Authorization', `bearer ${token}`)
       .expect(204)
 
     const after = await Blog.find({})

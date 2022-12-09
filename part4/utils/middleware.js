@@ -8,8 +8,6 @@ const tokenExtractor = async (request,response,next) => {
       return response.status(401).json({ error: 'token invalid' })
     }
     const user = await User.findOne({"username": decodedToken.username, "id": decodedToken.id})
-    console.log(decodedToken.id)
-    console.log(user)
     request.user = user
     next()
   }
