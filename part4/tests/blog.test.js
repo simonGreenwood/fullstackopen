@@ -1,7 +1,8 @@
 const helper = require('../utils/blog_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
 const supertest = require("supertest")
 const app = require("../app")
 const api = supertest(app)
@@ -84,11 +85,21 @@ describe('blog tests', () => {
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
-    const startingBlogs = await Blog.find({})
-    const target = startingBlogs[0]
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({username: 'root', name: 'root', passwordHash: passwordHash})
+    await user.save()
+    const blog = new Blog({
+      title: 'test blog',
+      author: "simon",
+      url: "www.exampleee.com",
+      user: user._id,
+      likes: 1   
+    })
+    const saved = await blog.save()
+    console.log(saved.user === user._id)
 
     await api
-      .delete(`/api/blogs/${target.id}`)
+      .delete(`/api/blogs/${saved.id}`)
       .expect(204)
 
     const after = await Blog.find({})
@@ -97,11 +108,9 @@ describe('deletion of a blog', () => {
   })
   
   test('fails with status code 400 if id is invalid', async () => {
-    const startingBlogs = await Blog.find({})
     await api
       .delete(`/api/blogs/invalidid`)
       .expect(400)
-    const after = await Blog.find({})
       
   },100000)
  
