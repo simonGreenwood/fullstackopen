@@ -11,6 +11,16 @@ const Blog = ({startingBlog,blogs,setBlogs,user}) => {
     borderWidth: 1,
     marginBottom: 5
   }
+  const handleDelete = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      const statusCode = await blogService.deleteBlog(blog.id)
+      if (statusCode!==204) {
+        console.log("error deleting blog")
+        return
+      }
+      setBlogs(blogs.filter(b => b.id!==blog.id))
+    }
+  }
   const handleLike = async () => {
     const newBlog = await blogService.updateBlog(blog.id, {
       ...blog,
@@ -31,6 +41,7 @@ const Blog = ({startingBlog,blogs,setBlogs,user}) => {
           <div>{blog.url}</div>
           <div>likes: {blog.likes} <button onClick={() => handleLike()}>like</button></div>
           <div>{blog.author}</div>
+          {blog.user.id===user.id ? <button onClick={() => handleDelete()}>remove</button> : null}
         </div> 
       : null}
     </div> 
