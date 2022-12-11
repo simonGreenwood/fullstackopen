@@ -20,12 +20,11 @@ const App = () => {
   const [success, setSuccess] = useState(null)
 
   const handleLogout = () => {
-    console.log("logging out")
+    console.log('logging out' )
     window.localStorage.removeItem('loggedBlogappUser')
   }
   const handleLogin = async (event) => {
     event.preventDefault()
-    
     try {
       const user = await loginService.login({
         username, password,
@@ -47,7 +46,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
-    )  
+    )
   }, [])
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -66,23 +65,23 @@ const App = () => {
         <form onSubmit={(event) => handleLogin(event)}>
           <div>
             username
-              <input
-              type="text"
+            <input
+              type='text'
               value={username}
-              name="Username"
+              name='Username'
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
           <div>
             password
-              <input
-              type="password"
+            <input
+              type='password'
               value={password}
-              name="Password"
+              name='Password'
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-        <button type="submit">login</button>
+          <button type='submit'>login</button>
         </form>
       </div>
     )
@@ -91,12 +90,11 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      
       <div>
         {user.name} logged in <button onClick={() => handleLogout()}>logout</button>
       </div>
-      <Notification message={errorMessage} success={success} /> 
-      <Togglable buttonLabel="new blog">
+      <Notification message={errorMessage} success={success} />
+      <Togglable buttonLabel='new blog'>
         <BlogForm setErrorMessage={setErrorMessage} setSuccess={setSuccess} setBlogs={setBlogs} blogs={blogs}/>
       </Togglable>
       {blogs.sort((a,b) => b.likes-a.likes).map(blog =>
@@ -105,5 +103,13 @@ const App = () => {
     </div>
   )
 }
- 
+
+
+
+
+
+
+
+
+
 export default App

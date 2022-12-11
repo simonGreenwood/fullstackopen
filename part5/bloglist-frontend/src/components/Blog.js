@@ -1,6 +1,6 @@
-import { useState} from "react"
-import blogService from "../services/blogs"
-const Blog = ({startingBlog,blogs,setBlogs,user}) => {
+import { useState } from 'react'
+import blogService from '../services/blogs'
+const Blog = ({ startingBlog,blogs,setBlogs,user }) => {
   const [blog,setBlog] = useState(startingBlog)
   const [extended, setExtended] = useState(false)
   const blogStyle = {
@@ -14,7 +14,7 @@ const Blog = ({startingBlog,blogs,setBlogs,user}) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       const statusCode = await blogService.deleteBlog(blog.id)
       if (statusCode!==204) {
-        console.log("error deleting blog")
+        console.log('error deleting blog')
         return
       }
       setBlogs(blogs.filter(b => b.id!==blog.id))
@@ -34,16 +34,16 @@ const Blog = ({startingBlog,blogs,setBlogs,user}) => {
   }
   return (
     <div style={blogStyle}>
-      <div>{blog.title} <button onClick={() => handleView()}>{extended ? "hide" : "view"}</button></div>
-      {extended ? 
+      <div>{blog.title} <button onClick={() => handleView()}>{extended ? 'hide' : 'view'}</button></div>
+      {extended ?
         <div>
           <div>{blog.url}</div>
           <div>likes: {blog.likes} <button onClick={() => handleLike()}>like</button></div>
           <div>{blog.author}</div>
           {blog.user.id===user.id ? <button onClick={() => handleDelete()}>remove</button> : null}
-        </div> 
-      : null}
-    </div> 
+        </div>
+        : null}
+    </div>
   )
 }
 

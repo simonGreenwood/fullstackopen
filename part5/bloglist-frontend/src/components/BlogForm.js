@@ -1,5 +1,5 @@
-import { useState } from "react"
-import blogService from "../services/blogs"
+import { useState } from 'react'
+import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
 const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs }) => {
@@ -34,7 +34,6 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs }) => {
       },5000)
     }
   }
-  
   return (
     <div>
       <h2>create new</h2>
@@ -42,33 +41,33 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs }) => {
         <div>
           title:
           <input
-            type="text"
+            type='text'
             value={title}
-            name="title"
+            name='title'
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
           author:
           <input
-            type="text"
+            type='text'
             value={author}
-            name="author"
+            name='author'
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
           url:
           <input
-            type="text"
+            type='text'
             value={url}
-            name="url"
+            name='url'
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
         <button onClick={(event) => handleCreateBlog(event)}>create</button>
-      </form> 
-    </div> 
+      </form>
+    </div>
   )
 }
 BlogForm.propTypes = {
