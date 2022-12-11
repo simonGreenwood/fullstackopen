@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useState} from "react"
 import blogService from "../services/blogs"
 
-const Blog = ({blog}) => {
-  const [likes,setLikes] = useState(blog.likes)
+const Blog = ({startingBlog,blogs,setBlogs,user}) => {
+  const [blog,setBlog] = useState(startingBlog)
   const [extended, setExtended] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -12,10 +12,13 @@ const Blog = ({blog}) => {
     marginBottom: 5
   }
   const handleLike = async () => {
-    const updatedBlog = {...blog, likes: blog.likes + 1}
-    const response = await blogService.updateBlog(blog.id, updatedBlog)
-    blog = response
-    setLikes(likes+1)
+    const newBlog = await blogService.updateBlog(blog.id, {
+      ...blog,
+      user: blog.user.id,
+      likes: blog.likes + 1
+    })
+    setBlog(newBlog)
+    setBlogs(blogs.map(b => b.id===newBlog.id ? newBlog: b))
   }
   const handleView = () => {
     setExtended(!extended)
@@ -26,7 +29,7 @@ const Blog = ({blog}) => {
       {extended ? 
         <div>
           <div>{blog.url}</div>
-          <div>likes: {likes} <button onClick={() => handleLike()}>like</button></div>
+          <div>likes: {blog.likes} <button onClick={() => handleLike()}>like</button></div>
           <div>{blog.author}</div>
         </div> 
       : null}
