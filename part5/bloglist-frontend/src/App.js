@@ -1,12 +1,22 @@
 import { useState, useEffect } from 'react'
+
 import Blog from './components/Blog'
+import Notification from './components/Notification'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [user, setUser] = useState(null)
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [success, setSuccess] = useState(null)
+
+
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -23,9 +33,23 @@ const App = () => {
       url: url,
     }
     console.log(blogObject)
-    const returnedBlog = await blogService.createBlog(blogObject)
-    console.log(returnedBlog)
-    setBlogs(blogs.concat(returnedBlog))
+    try {
+      const returnedBlog = await blogService.createBlog(blogObject)
+      console.log('created blog')
+      setBlogs(blogs.concat(returnedBlog))
+      setErrorMessage('created blog')
+      setSuccess(true)
+      setTimeout(() => {
+        setErrorMessage(null)
+      },5000)
+    } catch (exception) {
+      console.log('invalid content')
+      setErrorMessage('invalid content')
+      setSuccess(false)
+      setTimeout(() => {
+        setErrorMessage(null)
+      },5000)
+    }
   }
 
   const handleLogin = async (event) => {
@@ -42,11 +66,16 @@ const App = () => {
       setPassword('')
     } catch (exception) {
       console.log('wrong credentials')
+      setErrorMessage('wrong credentials')
+      setSuccess(false)
+      setTimeout(() => {
+        setErrorMessage(null)
+      },5000)
     }
   }
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )  
   }, [])
   useEffect(() => {
@@ -62,6 +91,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={errorMessage} success={success}/>
         <form onSubmit={(event) => handleLogin(event)}>
           <div>
             username
@@ -90,9 +120,11 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      
       <div>
         {user.name} logged in <button onClick={() => handleLogout()}>logout</button>
       </div>
+      <Notification message={errorMessage} success={success}/>
       <div>
         <h2>create new</h2>
         <form>
