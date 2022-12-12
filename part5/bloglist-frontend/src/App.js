@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 
 import Blog from './components/Blog'
@@ -19,6 +19,12 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [success, setSuccess] = useState(null)
 
+  const blogFormRef = useRef()
+  const blogForm = () => (
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <BlogForm setErrorMessage={setErrorMessage} setSuccess={setSuccess} setBlogs={setBlogs} blogs={blogs} blogFormRef={blogFormRef}/>
+    </Togglable>
+  )
   const handleLogout = () => {
     console.log('logging out' )
     window.localStorage.removeItem('loggedBlogappUser')
@@ -93,10 +99,8 @@ const App = () => {
       <div>
         {user.name} logged in <button onClick={() => handleLogout()}>logout</button>
       </div>
+      {blogForm()}
       <Notification message={errorMessage} success={success} />
-      <Togglable buttonLabel='new blog'>
-        <BlogForm setErrorMessage={setErrorMessage} setSuccess={setSuccess} setBlogs={setBlogs} blogs={blogs}/>
-      </Togglable>
       {blogs.sort((a,b) => b.likes-a.likes).map(blog =>
         <Blog key={blog.id} startingBlog={blog} blogs={blogs} setBlogs={setBlogs} user={user}/>
       )}

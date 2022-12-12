@@ -2,7 +2,7 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs }) => {
+const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs, blogFormRef }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -10,6 +10,7 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs }) => {
 
   const handleCreateBlog = async (event) => {
     event.preventDefault()
+
     const blogObject = {
       title: title,
       author: author,
@@ -22,6 +23,7 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs }) => {
       setBlogs(blogs.concat(returnedBlog))
       setErrorMessage('created blog')
       setSuccess(true)
+      blogFormRef.current.toggleVisibility()
       setTimeout(() => {
         setErrorMessage(null)
       },5000)
