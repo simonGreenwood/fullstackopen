@@ -1,6 +1,6 @@
 import { useState } from 'react'
 const Blog = (props) => {
-  const [blog,setBlog] = useState(props.startingBlog)
+  const [blog, setBlog] = useState(props.startingBlog)
   const [extended, setExtended] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -17,9 +17,8 @@ const Blog = (props) => {
       <div>{blog.title} {blog.author} <button onClick={() => handleView()}>{extended ? 'hide' : 'view'}</button></div>
       {extended ?
         <div>
-          <div>{blog.url}</div>
-          <div>likes: {blog.likes} <button onClick={async () => setBlog(await props.handleLike(blog))}>like</button></div>
-          <div>{blog.author}</div>
+          <div className='url'>{blog.url}</div>
+          <div className='likes'>likes: {blog.likes} <button onClick={async () => setBlog(await props.handleLike(blog) || blog)}>like</button></div>
           {blog.user.id===props.user.id ? <button onClick={() => props.handleDelete(blog)}>remove</button> : null}
         </div>
         : null}
