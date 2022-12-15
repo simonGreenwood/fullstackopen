@@ -25,6 +25,26 @@ const App = () => {
       <BlogForm setErrorMessage={setErrorMessage} setSuccess={setSuccess} setBlogs={setBlogs} blogs={blogs} blogFormRef={blogFormRef}/>
     </Togglable>
   )
+
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      const statusCode = await blogService.deleteBlog(blog.id)
+      if (statusCode!==204) {
+        console.log('error deleting blog')
+        return
+      }
+      setBlogs(blogs.filter(b => b.id!==blog.id))
+    }
+  }
+  const handleLike = async (blog) => {
+    const newBlog = await blogService.updateBlog(blog.id, {
+      ...blog,
+      user: blog.user.id,
+      likes: blog.likes + 1
+    })
+    setBlogs(blogs.map(b => b.id===newBlog.id ? newBlog: b))
+    return newBlog
+  }
   const handleLogout = () => {
     console.log('logging out' )
     window.localStorage.removeItem('loggedBlogappUser')
@@ -102,7 +122,7 @@ const App = () => {
       {blogForm()}
       <Notification message={errorMessage} success={success} />
       {blogs.sort((a,b) => b.likes-a.likes).map(blog =>
-        <Blog key={blog.id} startingBlog={blog} blogs={blogs} setBlogs={setBlogs} user={user}/>
+        <Blog key={blog.id} startingBlog={blog} handleDelete={(blog) => handleDelete(blog)} handleLike={(blog) => handleLike(blog)} user={user}/>
       )}
     </div>
   )

@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
-const Blog = ({ startingBlog,blogs,setBlogs,user }) => {
-  const [blog,setBlog] = useState(startingBlog)
+const Blog = (props) => {
+  const [blog,setBlog] = useState(props.startingBlog)
   const [extended, setExtended] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -10,37 +9,18 @@ const Blog = ({ startingBlog,blogs,setBlogs,user }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  const handleDelete = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      const statusCode = await blogService.deleteBlog(blog.id)
-      if (statusCode!==204) {
-        console.log('error deleting blog')
-        return
-      }
-      setBlogs(blogs.filter(b => b.id!==blog.id))
-    }
-  }
-  const handleLike = async () => {
-    const newBlog = await blogService.updateBlog(blog.id, {
-      ...blog,
-      user: blog.user.id,
-      likes: blog.likes + 1
-    })
-    setBlog(newBlog)
-    setBlogs(blogs.map(b => b.id===newBlog.id ? newBlog: b))
-  }
   const handleView = () => {
     setExtended(!extended)
   }
   return (
-    <div style={blogStyle}>
-      <div>{blog.title} <button onClick={() => handleView()}>{extended ? 'hide' : 'view'}</button></div>
+    <div style={blogStyle} className="blog">
+      <div>{blog.title} {blog.author} <button onClick={() => handleView()}>{extended ? 'hide' : 'view'}</button></div>
       {extended ?
         <div>
           <div>{blog.url}</div>
-          <div>likes: {blog.likes} <button onClick={() => handleLike()}>like</button></div>
+          <div>likes: {blog.likes} <button onClick={async () => setBlog(await props.handleLike(blog))}>like</button></div>
           <div>{blog.author}</div>
-          {blog.user.id===user.id ? <button onClick={() => handleDelete()}>remove</button> : null}
+          {blog.user.id===props.user.id ? <button onClick={() => props.handleDelete(blog)}>remove</button> : null}
         </div>
         : null}
     </div>

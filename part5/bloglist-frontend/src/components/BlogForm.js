@@ -36,6 +36,7 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs, blogFormRef })
       },5000)
     }
   }
+
   return (
     <div>
       <h2>create new</h2>
