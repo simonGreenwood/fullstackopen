@@ -67,5 +67,6 @@ test('event handler is called with the right props', async () => {
   await user.click(viewButton)
   const likeButton = screen.getByText('like')
   await user.click(likeButton)
+  expect(handleLike.mock.calls).toHaveLength(1)
   expect(handleLike.mock.calls[0][0]===blog).toBe(true)
 })
