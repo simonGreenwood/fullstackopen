@@ -78,6 +78,6 @@ describe("Blog app", function() {
         cy.contains("view").click()
         cy.get(".blog").should("not.contain", "remove")
       })
-    })
+    }) 
   })
 })
