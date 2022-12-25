@@ -14,11 +14,11 @@ const Blog = (props) => {
   }
   return (
     <div style={blogStyle} className="blog">
-      <div>{blog.title} {blog.author} <button onClick={() => handleView()}>{extended ? 'hide' : 'view'}</button></div>
+      <div>{blog.title} {blog.author} <button className="view-button" onClick={() => handleView()}>{extended ? 'hide' : 'view'}</button></div>
       {extended ?
         <div>
           <div className='url'>{blog.url}</div>
-          <div className='likes'>likes: {blog.likes} <button onClick={async () => setBlog(await props.handleLike(blog) || blog)}>like</button></div>
+          <div className='likes'>likes: {blog.likes} <button onClick={async () => setBlog(await props.handleLike(blog) || blog)} className="like-button">like</button></div>
           {blog.user.id===props.user.id ? <button onClick={() => props.handleDelete(blog)}>remove</button> : null}
         </div>
         : null}
