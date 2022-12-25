@@ -46,6 +46,7 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs, blogFormRef })
           <input
             type='text'
             value={title}
+            id='title'
             name='title'
             onChange={({ target }) => setTitle(target.value)}
           />
@@ -55,6 +56,7 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs, blogFormRef })
           <input
             type='text'
             value={author}
+            id='author'
             name='author'
             onChange={({ target }) => setAuthor(target.value)}
           />
@@ -64,11 +66,12 @@ const BlogForm = ({ setErrorMessage, setSuccess, blogs, setBlogs, blogFormRef })
           <input
             type='text'
             value={url}
+            id='url'
             name='url'
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button onClick={(event) => handleCreateBlog(event)}>create</button>
+        <button id="create-button" onClick={(event) => handleCreateBlog(event)}>create</button>
       </form>
     </div>
   )
