@@ -7,6 +7,23 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
+
+const createAnecdote = (content) => {
+  return {
+    type: 'NEW_ANECDOTE',
+    data: {
+      content,
+      votes: 0
+    }
+  }
+}
+
+const voteForAnecdote = (id) => {
+  return {
+    type: 'VOTE',
+    data: { id }
+  }
+}
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
@@ -33,10 +50,11 @@ const reducer = (state = initialState, action) => {
     return newAnecdotes.sort((a, b) => b.votes - a.votes)
   }
   else if (action.type === 'NEW_ANECDOTE') {
-    return [...state, action.data]
+    const newAnecdote = asObject(action.data.content)
+    return [...state, newAnecdote]
   }
   console.log(action.type)
   return state
 }
 
-export default reducer
+export { reducer, createAnecdote, voteForAnecdote }
