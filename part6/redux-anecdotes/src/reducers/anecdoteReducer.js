@@ -31,6 +31,9 @@ const reducer = (state = initialState, action) => {
       anecdote.id !== id ? anecdote : changedAnecdote
     ) 
   }
+  else if (action.type === 'NEW_ANECDOTE') {
+    return [...state, action.data]
+  }
   console.log(action.type)
   return state
 }
