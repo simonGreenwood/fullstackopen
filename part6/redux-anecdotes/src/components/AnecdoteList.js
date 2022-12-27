@@ -26,4 +26,4 @@ const AnecdoteList = () => {
     </div>
   )
 }
-export default AnecdoteList
+export default AnecdoteList 
