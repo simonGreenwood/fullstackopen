@@ -1,3 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit"
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -7,23 +9,6 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
-
-const createAnecdote = (content) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    data: {
-      content,
-      votes: 0
-    }
-  }
-}
-
-const voteForAnecdote = (id) => {
-  return {
-    type: 'VOTE',
-    data: { id }
-  }
-}
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
@@ -36,25 +21,29 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
-  if (action.type === 'VOTE') {
-    const id = action.data.id
-    const anecdoteToChange = state.find(a => a.id === id)
-    const changedAnecdote = {
-      ...anecdoteToChange,
-      votes: anecdoteToChange.votes + 1
-    }
-    const newAnecdotes = state.map(anecdote =>
-      anecdote.id !== id ? anecdote : changedAnecdote
-    ) 
-    return newAnecdotes.sort((a, b) => b.votes - a.votes)
-  }
-  else if (action.type === 'NEW_ANECDOTE') {
-    const newAnecdote = asObject(action.data.content)
-    return [...state, newAnecdote]
-  }
-  console.log(action.type)
-  return state
-}
 
-export { reducer, createAnecdote, voteForAnecdote }
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      console.log(action.payload)
+      const newAnecdote = asObject(action.payload)
+      return [...state, newAnecdote]
+    },
+    voteForAnecdote(state, action) {
+      const id = action.payload
+      const anecdoteToChange = state.find(a => a.id === id)
+      const changedAnecdote = {
+        ...anecdoteToChange,
+        votes: anecdoteToChange.votes + 1
+      }
+      const newAnecdotes = state.map(anecdote =>
+        anecdote.id !== id ? anecdote : changedAnecdote
+      ) 
+      return newAnecdotes.sort((a, b) => b.votes - a.votes)
+    }
+  }
+})
+export const { createAnecdote, voteForAnecdote } = anecdoteSlice.actions
+export default anecdoteSlice.reducer
