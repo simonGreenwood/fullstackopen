@@ -25,10 +25,10 @@ const anecdoteSlice = createSlice({
     setAnecdotes(state, action) {
       return action.payload
     }
-  }
+  } 
 })
 export const { createAnecdote, voteForAnecdote, appendAnecdote, setAnecdotes } = anecdoteSlice.actions
-
+ 
 export const createNew = (content) => {
   return async dispatch => {
     const newAnecdote = await anecdoteService.createNew(content)
