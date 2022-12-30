@@ -18,7 +18,7 @@ export const setNotificationWithTimeout = (notification, timeout) => {
     dispatch(setNotification(notification))
     setTimeout(() => {
       dispatch(clearNotification())
-    }, timeout*100)
+    }, timeout*1000)
   }
 }
 export default notificationSlice.reducer
