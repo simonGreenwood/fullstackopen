@@ -1,4 +1,3 @@
-import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import { createNew } from "../reducers/anecdoteReducer";
 import { setNotificationWithTimeout } from "../reducers/notificationReducer";
