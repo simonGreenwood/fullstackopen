@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 const config = (env, argv) => {
   console.log('argv', argv.mode)
