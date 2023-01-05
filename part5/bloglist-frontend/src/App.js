@@ -7,8 +7,11 @@ import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
-
+import { setNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 const App = () => {
+  const dispatch = useDispatch()
+
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
@@ -63,16 +66,13 @@ const App = () => {
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUser(user)
+      dispatch(setNotification(`logged in as ${user.username}`))
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (exception) {
       console.log('wrong credentials')
-      setErrorMessage('wrong credentials')
-      setSuccess(false)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setNotification('wrong credentials'))
     }
   }
   useEffect(() => {
