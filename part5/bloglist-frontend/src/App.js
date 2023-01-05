@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 
-
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
@@ -21,39 +20,46 @@ const App = () => {
 
   const blogFormRef = useRef()
   const blogForm = () => (
-    <Togglable buttonLabel='new blog' ref={blogFormRef}>
-      <BlogForm setErrorMessage={setErrorMessage} setSuccess={setSuccess} setBlogs={setBlogs} blogs={blogs} blogFormRef={blogFormRef}/>
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <BlogForm
+        setErrorMessage={setErrorMessage}
+        setSuccess={setSuccess}
+        setBlogs={setBlogs}
+        blogs={blogs}
+        blogFormRef={blogFormRef}
+      />
     </Togglable>
   )
 
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       const statusCode = await blogService.deleteBlog(blog.id)
-      if (statusCode!==204) {
+      if (statusCode !== 204) {
         console.log('error deleting blog')
         return
       }
-      setBlogs(blogs.filter(b => b.id!==blog.id))
+      setBlogs(blogs.filter((b) => b.id !== blog.id))
     }
   }
   const handleLike = async (blog) => {
     const newBlog = await blogService.updateBlog(blog.id, {
       ...blog,
       user: blog.user.id,
-      likes: blog.likes + 1
+      likes: blog.likes + 1,
     })
-    setBlogs(blogs.map(b => b.id===newBlog.id ? newBlog: b))
+    setBlogs(blogs.map((b) => (b.id === newBlog.id ? newBlog : b)))
     return newBlog
   }
   const handleLogout = () => {
-    console.log('logging out' )
+    console.log('logging out')
     window.localStorage.removeItem('loggedBlogappUser')
   }
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password,
+        username,
+        password,
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUser(user)
@@ -66,13 +72,11 @@ const App = () => {
       setSuccess(false)
       setTimeout(() => {
         setErrorMessage(null)
-      },5000)
+      }, 5000)
     }
   }
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -87,29 +91,31 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={errorMessage} success={success}/>
+        <Notification message={errorMessage} success={success} />
         <form onSubmit={(event) => handleLogin(event)}>
           <div>
             username
             <input
-              type='text'
+              type="text"
               value={username}
-              id='username'
-              name='Username'
+              id="username"
+              name="Username"
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
           <div>
             password
             <input
-              type='password'
+              type="password"
               value={password}
-              id='password'
-              name='Password'
+              id="password"
+              name="Password"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button type='submit' id='login-button'>login</button>
+          <button type="submit" id="login-button">
+            login
+          </button>
         </form>
       </div>
     )
@@ -119,23 +125,24 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <div>
-        logged in as {user.username}<button onClick={() => handleLogout()}>logout</button>
+        logged in as {user.username}
+        <button onClick={() => handleLogout()}>logout</button>
       </div>
       {blogForm()}
       <Notification message={errorMessage} success={success} />
-      {blogs.sort((a,b) => b.likes-a.likes).map(blog =>
-        <Blog key={blog.id} startingBlog={blog} handleDelete={(blog) => handleDelete(blog)} handleLike={(blog) => handleLike(blog)} user={user}/>
-      )}
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            startingBlog={blog}
+            handleDelete={(blog) => handleDelete(blog)}
+            handleLike={(blog) => handleLike(blog)}
+            user={user}
+          />
+        ))}
     </div>
   )
 }
-
-
-
-
-
-
-
-
 
 export default App
