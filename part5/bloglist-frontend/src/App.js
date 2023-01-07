@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
@@ -13,6 +14,8 @@ import { setUser } from './reducers/userReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogsReducer'
+
+import { Route, Routes } from 'react-router-dom'
 const App = () => {
   const dispatch = useDispatch()
 
@@ -26,6 +29,7 @@ const App = () => {
   const [success, setSuccess] = useState(null)
 
   const blogFormRef = useRef()
+
   const blogForm = () => (
     <Togglable buttonLabel="new blog" ref={blogFormRef}>
       <BlogForm
@@ -37,23 +41,6 @@ const App = () => {
     </Togglable>
   )
 
-  /*const handleDelete = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      const statusCode = await blogService.deleteBlog(blog.id)
-      if (statusCode !== 204) {
-        console.log('error deleting blog')
-        return
-      }
-    }
-  }
-  const handleLike = async (blog) => {
-    const newBlog = await blogService.updateBlog(blog.id, {
-      ...blog,
-      user: blog.user.id,
-      likes: blog.likes + 1,
-    })
-    return newBlog
-  }*/
   const handleLogout = () => {
     console.log('logging out')
     window.localStorage.removeItem('loggedBlogappUser')
@@ -90,41 +77,12 @@ const App = () => {
   }, [])
 
   if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <Notification message={errorMessage} success={success} />
-        <form onSubmit={(event) => handleLogin(event)}>
-          <div>
-            username
-            <input
-              type="text"
-              value={username}
-              id="username"
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              type="password"
-              value={password}
-              id="password"
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit" id="login-button">
-            login
-          </button>
-        </form>
-      </div>
-    )
+    return <LoginForm />
   }
-  if (blogs === []) return <h1>Loading.......</h1>
+  if (blogs === []) return <h1>Loading...</h1>
   return (
     <div>
+      {user === null ? <LoginForm /> : null}
       <h2>blogs</h2>
       <div>
         logged in as {user.username}

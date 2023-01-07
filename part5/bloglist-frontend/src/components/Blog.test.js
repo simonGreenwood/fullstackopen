@@ -12,28 +12,27 @@ const blog = {
   user: {
     username: 'root',
     name: 'root',
-    id: '638c710325b48c62927de329'
-  }
+    id: '638c710325b48c62927de329',
+  },
 }
 const userForBlog = {
   user: {
     username: 'root',
     name: 'root',
-    id: '638c710325b48c62927de329'
-  }
+    id: '638c710325b48c62927de329',
+  },
 }
 
-
 test('renders content', async () => {
-  const { container } = render(<Blog startingBlog={blog} user={userForBlog}/>)
+  const { container } = render(<Blog startingBlog={blog} user={userForBlog} />)
   const div = container.querySelector('.blog')
-  expect(div).toHaveTextContent('Component testing is done with react-testing-library test author')
-
+  expect(div).toHaveTextContent(
+    'Component testing is done with react-testing-library test author'
+  )
 })
 
-
 test('url and likes are displayed after button click', async () => {
-  const { container } = render(<Blog startingBlog={blog} user={userForBlog}/>)
+  const { container } = render(<Blog startingBlog={blog} user={userForBlog} />)
   const div = container.querySelector('.blog')
   const user = userEvent.setup()
   const button = screen.getByText('view')
@@ -45,12 +44,13 @@ test('url and likes are displayed after button click', async () => {
 
   const likes = container.querySelector('.likes')
   expect(likes).toHaveTextContent(`likes: ${blog.likes}`)
-
 })
 
 test('event handler is called twice when like button is clicked twice', async () => {
   const mockHandler = jest.fn()
-  render(<Blog startingBlog={blog} user={userForBlog} handleLike={mockHandler}/>)
+  render(
+    <Blog startingBlog={blog} user={userForBlog} handleLike={mockHandler} />
+  )
   const viewButton = screen.getByText('view')
   const user = userEvent.setup()
   await user.click(viewButton)
@@ -61,12 +61,14 @@ test('event handler is called twice when like button is clicked twice', async ()
 })
 test('event handler is called with the right props', async () => {
   const handleLike = jest.fn()
-  render(<Blog startingBlog={blog} user={userForBlog} handleLike={handleLike}/>)
+  render(
+    <Blog startingBlog={blog} user={userForBlog} handleLike={handleLike} />
+  )
   const viewButton = screen.getByText('view')
   const user = userEvent.setup()
   await user.click(viewButton)
   const likeButton = screen.getByText('like')
   await user.click(likeButton)
   expect(handleLike.mock.calls).toHaveLength(1)
-  expect(handleLike.mock.calls[0][0]===blog).toBe(true)
+  expect(handleLike.mock.calls[0][0] === blog).toBe(true)
 })
