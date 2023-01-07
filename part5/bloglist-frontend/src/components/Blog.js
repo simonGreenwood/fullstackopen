@@ -16,10 +16,12 @@ const Blog = ({ blog, user }) => {
   const handleView = () => {
     setExtended(!extended)
   }
+
   const handleLike = () => {
     dispatch(setNotification(`You liked ${blog.title}`, 5))
     dispatch(likeBlog(blog))
   }
+
   const handleDelete = () => {
     dispatch(setNotification(`You deleted ${blog.title}`, 5))
     dispatch(removeBlog(blog))
