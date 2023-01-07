@@ -7,6 +7,7 @@ const { setUser } = require('../reducers/userReducer')
 const loginService = require('../services/login')
 const blogService = require('../services/blogs')
 
+const Notification = require('./Notification')
 const LoginForm = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
@@ -26,6 +27,8 @@ const LoginForm = () => {
       dispatch(setNotification(`logged in as ${user.username}`))
       blogService.setToken(user.token)
     } catch (exception) {
+      console.log(username, password)
+      console.log(exception)
       console.log('wrong credentials')
       dispatch(setNotification('wrong credentials'))
     }
@@ -35,6 +38,7 @@ const LoginForm = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification />
         <form onSubmit={(event) => handleLogin(event)}>
           <div>
             username
