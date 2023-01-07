@@ -1,13 +1,12 @@
-const { useState } = require('react')
-const { useDispatch, useSelector } = require('react-redux')
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setNotification } from '../reducers/notificationReducer'
+import { setUser } from '../reducers/userReducer'
 
-const { setNotification } = require('../reducers/notificationReducer')
-const { setUser } = require('../reducers/userReducer')
+import loginService from '../services/login'
+import blogService from '../services/blogs'
 
-const loginService = require('../services/login')
-const blogService = require('../services/blogs')
-
-const Notification = require('./Notification')
+import Notification from './Notification'
 const LoginForm = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)

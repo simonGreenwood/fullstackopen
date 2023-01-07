@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux'
 const Users = () => {
   const users = useSelector((state) => state.users)
+  // use selector to get all the users and sort them based on the amount of blogs.
+  console.log(users)
+  if (users === []) return <h1>Loading...</h1>
   return (
     <div>
       <h2>Users</h2>

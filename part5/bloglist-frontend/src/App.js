@@ -3,10 +3,12 @@ import { useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 
 import blogService from './services/blogs'
-import { setUser } from './reducers/userReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
+
 import { initializeBlogs } from './reducers/blogsReducer'
+import { setUser } from './reducers/userReducer'
+import { initializeUsers } from './reducers/usersReducer'
 
 import { Route, Routes } from 'react-router-dom'
 
@@ -26,6 +28,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [])
 
   useEffect(() => {
@@ -50,8 +53,8 @@ const App = () => {
         <button onClick={() => handleLogout()}>logout</button>
       </div>
       <Routes>
-        <Route path="/users" component={<Users />} />
-        <Route path="/" component={<Home />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </div>
   )
