@@ -8,11 +8,11 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs } from './reducers/blogsReducer'
 const App = () => {
   const dispatch = useDispatch()
-
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const [user, setUser] = useState(null)
 
   const [username, setUsername] = useState('')
@@ -27,21 +27,19 @@ const App = () => {
       <BlogForm
         setErrorMessage={setErrorMessage}
         setSuccess={setSuccess}
-        setBlogs={setBlogs}
         blogs={blogs}
         blogFormRef={blogFormRef}
       />
     </Togglable>
   )
 
-  const handleDelete = async (blog) => {
+  /*const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       const statusCode = await blogService.deleteBlog(blog.id)
       if (statusCode !== 204) {
         console.log('error deleting blog')
         return
       }
-      setBlogs(blogs.filter((b) => b.id !== blog.id))
     }
   }
   const handleLike = async (blog) => {
@@ -50,13 +48,13 @@ const App = () => {
       user: blog.user.id,
       likes: blog.likes + 1,
     })
-    setBlogs(blogs.map((b) => (b.id === newBlog.id ? newBlog : b)))
     return newBlog
-  }
+  }*/
   const handleLogout = () => {
     console.log('logging out')
     window.localStorage.removeItem('loggedBlogappUser')
   }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -75,13 +73,16 @@ const App = () => {
       dispatch(setNotification('wrong credentials'))
     }
   }
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    dispatch(initializeBlogs())
   }, [])
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      console.log(user)
       setUser(user)
       blogService.setToken(user.token)
     }
@@ -120,7 +121,7 @@ const App = () => {
       </div>
     )
   }
-
+  if (blogs === []) return <h1>Loading.......</h1>
   return (
     <div>
       <h2>blogs</h2>
@@ -130,17 +131,9 @@ const App = () => {
       </div>
       {blogForm()}
       <Notification message={errorMessage} success={success} />
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            startingBlog={blog}
-            handleDelete={(blog) => handleDelete(blog)}
-            handleLike={(blog) => handleLike(blog)}
-            user={user}
-          />
-        ))}
+      {blogs.map((blog) => (
+        <Blog key={blog.id} blog={blog} user={user} />
+      ))}
     </div>
   )
 }

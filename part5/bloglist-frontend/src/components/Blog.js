@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
-const Blog = (props) => {
-  const [blog, setBlog] = useState(props.startingBlog)
+import { setNotification } from '../reducers/notificationReducer'
+import { likeBlog, removeBlog } from '../reducers/blogsReducer'
+
+const Blog = ({ blog, user }) => {
   const [extended, setExtended] = useState(false)
   const dispatch = useDispatch()
   const blogStyle = {
@@ -17,11 +18,17 @@ const Blog = (props) => {
   }
   const handleLike = () => {
     dispatch(setNotification(`You liked ${blog.title}`, 5))
+    dispatch(likeBlog(blog))
   }
+  const handleDelete = () => {
+    dispatch(setNotification(`You deleted ${blog.title}`, 5))
+    dispatch(removeBlog(blog))
+  }
+
   return (
     <div style={blogStyle} className="blog">
       <div>
-        {blog.title} {blog.author}{' '}
+        {blog.title} {blog.author}
         <button className="view-button" onClick={() => handleView()}>
           {extended ? 'hide' : 'view'}
         </button>
@@ -30,16 +37,13 @@ const Blog = (props) => {
         <div>
           <div className="url">{blog.url}</div>
           <div className="likes">
-            likes: {blog.likes}{' '}
-            <button
-              onClick={async () => setBlog(handleLike(blog) || blog)}
-              className="like-button"
-            >
+            likes: {blog.likes}
+            <button onClick={handleLike} className="like-button">
               like
             </button>
           </div>
-          {blog.user.id === props.user.id ? (
-            <button onClick={() => props.handleDelete(blog)}>remove</button>
+          {blog.user.id === user.id ? (
+            <button onClick={handleDelete}>remove</button>
           ) : null}
         </div>
       ) : null}
