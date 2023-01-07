@@ -7,13 +7,17 @@ import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
+
 import { setNotification } from './reducers/notificationReducer'
+import { setUser } from './reducers/userReducer'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogsReducer'
 const App = () => {
   const dispatch = useDispatch()
+
   const blogs = useSelector((state) => state.blogs)
-  const [user, setUser] = useState(null)
+  const user = useSelector((state) => state.user)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -63,11 +67,9 @@ const App = () => {
         password,
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      setUser(user)
+      dispatch(setUser(user))
       dispatch(setNotification(`logged in as ${user.username}`))
       blogService.setToken(user.token)
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       console.log('wrong credentials')
       dispatch(setNotification('wrong credentials'))
@@ -81,10 +83,9 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      console.log(user)
-      setUser(user)
-      blogService.setToken(user.token)
+      const userAsJson = JSON.parse(loggedUserJSON)
+      dispatch(setUser(userAsJson))
+      blogService.setToken(userAsJson.token)
     }
   }, [])
 
@@ -132,7 +133,7 @@ const App = () => {
       {blogForm()}
       <Notification message={errorMessage} success={success} />
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} />
+        <Blog key={blog.id} blog={blog} />
       ))}
     </div>
   )
