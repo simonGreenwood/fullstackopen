@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../reducers/userReducer'
 
@@ -7,13 +6,9 @@ const LoginForm = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const handleLogin = (event) => {
     event.preventDefault()
-    dispatch(login(username, password))
-    setUsername('')
-    setPassword('')
+    dispatch(login(event.target.username.value, event.target.password.value))
   }
   if (user === null) {
     return (
@@ -23,23 +18,11 @@ const LoginForm = () => {
         <form onSubmit={(event) => handleLogin(event)}>
           <div>
             username
-            <input
-              type="text"
-              value={username}
-              id="username"
-              name="username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
+            <input type="text" id="username" name="username" />
           </div>
           <div>
             password
-            <input
-              type="password"
-              value={password}
-              id="password"
-              name="password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
+            <input type="password" id="password" name="password" />
           </div>
           <button type="submit" id="login-button">
             login

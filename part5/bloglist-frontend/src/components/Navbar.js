@@ -4,16 +4,27 @@ import { Link } from 'react-router-dom'
 
 const Navbar = () => {
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
   const handleLogout = () => {
     dispatch(logout())
   }
 
-  const user = useSelector((state) => state.user)
+  const navbarStyle = {
+    padding: 5,
+    background: 'lightgray',
+  }
+  const navElementStyle = {
+    paddingRight: 5,
+  }
+
   return (
-    <div className="navbar">
-      <h1>Bloglist</h1>
-      <Link to="/">blogs</Link>
-      <Link to="/users">users</Link>
+    <div style={navbarStyle} className="navbar">
+      <Link to="/" style={navElementStyle}>
+        blogs
+      </Link>
+      <Link to="/users" style={navElementStyle}>
+        users
+      </Link>
       {user.name} logged in <button onClick={handleLogout}>logout</button>
     </div>
   )
