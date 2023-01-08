@@ -24,6 +24,11 @@ const BlogPage = () => {
           <button onClick={handleLike}>like</button>
         </div>
         <div>added by {blog.user.name}</div>
+        <ul>
+          {blog.comments.map((comment) => (
+            <li>{comment}</li>
+          ))}
+        </ul>
       </div>
     </div>
   )
