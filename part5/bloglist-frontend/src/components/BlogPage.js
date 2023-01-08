@@ -18,7 +18,7 @@ const BlogPage = () => {
     <div>
       <h2>{blog.title}</h2>
       <div>
-        <a to={blog.url}>{blog.url}</a>
+        <a href={blog.url}>{blog.url}</a>
         <div>
           {blog.likes} likes
           <button onClick={handleLike}>like</button>
