@@ -12,6 +12,8 @@ import Home from './components/Home'
 import User from './components/User'
 import BlogPage from './components/BlogPage'
 import Navbar from './components/Navbar'
+
+import { Container } from '@material-ui/core'
 const App = () => {
   const { blogs, user } = useSelector((state) => state)
 
@@ -25,16 +27,15 @@ const App = () => {
   if (blogs === []) return <h1>Loading..</h1>
   if (user === null) return <LoginForm />
   return (
-    <div>
+    <Container>
       <Navbar />
-      <h2>blog app</h2>
       <Routes>
         <Route path="/blogs/:id" element={<BlogPage />} />
         <Route path="/users/:id" element={<User />} />
         <Route path="/users" element={<Users />} />
         <Route path="/" element={<Home />} />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, commentOnBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useState } from 'react'
+import { Button, TextField, Typography } from '@material-ui/core'
 const BlogPage = () => {
   const id = useParams().id
   const blogs = useSelector((state) => state.blogs)
@@ -26,17 +27,21 @@ const BlogPage = () => {
         <a href={blog.url}>{blog.url}</a>
         <div>
           {blog.likes} likes
-          <button onClick={handleLike}>like</button>
+          <Button onClick={handleLike} color="primary" variant="contained">
+            like
+          </Button>
         </div>
         <div>added by {blog.user.name}</div>
         <h3>comments</h3>
         <form onSubmit={(e) => handleComment(e)}>
-          <input
+          <TextField
             type="text"
             value={comment}
             onChange={(event) => setComment(event.target.value)}
           />
-          <button type="submit">add comment</button>
+          <Button type="submit" color="primary" variant="contained">
+            add comment
+          </Button>
         </form>
         <ul>
           {blog.comments.map((comment, index) => (
