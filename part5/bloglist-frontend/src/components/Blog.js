@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-
+import { TableRow, TableCell } from '@material-ui/core'
 const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
@@ -9,11 +9,12 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   }
   return (
-    <div style={blogStyle} className="blog">
-      <Link to={`/blogs/${blog.id}`}>
-        {blog.title} {blog.author}
-      </Link>
-    </div>
+    <TableRow style={blogStyle} className="blog">
+      <TableCell>
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+      </TableCell>
+      <TableCell align="right">{blog.author}</TableCell>
+    </TableRow>
   )
 }
 
