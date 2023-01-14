@@ -13,6 +13,7 @@ import {
   TableBody,
   Paper,
   TableContainer,
+  Typography,
 } from '@mui/material'
 const BlogPage = () => {
   const id = useParams().id
@@ -31,7 +32,7 @@ const BlogPage = () => {
   if (!blog) return null
   return (
     <div>
-      <h2>{blog.title}</h2>
+      <Typography variant="h3">{blog.title}</Typography>
       <div>
         <a href={blog.url}>{blog.url}</a>
         <div>
