@@ -3,6 +3,7 @@ import blogService from '../services/blogs'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { addBlog } from '../reducers/blogsReducer'
+import { TextField, Button, Typography } from '@mui/material'
 const BlogForm = ({ blogFormRef }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -36,11 +37,11 @@ const BlogForm = ({ blogFormRef }) => {
 
   return (
     <div>
-      <h2>create new</h2>
-      <form>
+      <Typography variant="h4">Create a new blog</Typography>
+      <form onSubmit={(event) => handleCreateBlog(event)}>
         <div>
-          title:
-          <input
+          <TextField
+            label="title"
             type="text"
             value={title}
             id="title"
@@ -49,8 +50,8 @@ const BlogForm = ({ blogFormRef }) => {
           />
         </div>
         <div>
-          author:
-          <input
+          <TextField
+            label="author"
             type="text"
             value={author}
             id="author"
@@ -59,8 +60,8 @@ const BlogForm = ({ blogFormRef }) => {
           />
         </div>
         <div>
-          url:
-          <input
+          <TextField
+            label="url"
             type="text"
             value={url}
             id="url"
@@ -68,9 +69,9 @@ const BlogForm = ({ blogFormRef }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button id="create-button" onClick={(event) => handleCreateBlog(event)}>
+        <Button id="create-button" type="submit" variant="contained">
           create
-        </button>
+        </Button>
       </form>
     </div>
   )

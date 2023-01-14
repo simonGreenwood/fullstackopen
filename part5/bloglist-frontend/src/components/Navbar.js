@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../reducers/userReducer'
 import { Link } from 'react-router-dom'
 import { AppBar, Toolbar, IconButton, Button, Typography } from '@mui/material'
+
 const Navbar = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.name)
