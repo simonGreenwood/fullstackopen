@@ -13,7 +13,7 @@ import User from './components/User'
 import BlogPage from './components/BlogPage'
 import Navbar from './components/Navbar'
 
-import { Container } from '@material-ui/core'
+import { Container } from '@mui/material'
 const App = () => {
   const { blogs, user } = useSelector((state) => state)
 

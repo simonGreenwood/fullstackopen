@@ -4,7 +4,7 @@ import Blog from './Blog'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
 import { useSelector } from 'react-redux'
-import { TableContainer, Paper, Table, TableBody } from '@material-ui/core'
+import { TableContainer, Paper, Table, TableBody } from '@mui/material'
 const Home = () => {
   const blogFormRef = useRef()
   const blogs = useSelector((state) => state.blogs)
@@ -13,7 +13,6 @@ const Home = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm blogFormRef={blogFormRef} />
       </Togglable>
-      <Notification />
       <TableContainer component={Paper}>
         <Table>
           <TableBody>

@@ -4,7 +4,16 @@ import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, commentOnBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useState } from 'react'
-import { Button, TextField, Typography } from '@material-ui/core'
+import {
+  Button,
+  TextField,
+  TableRow,
+  TableCell,
+  Table,
+  TableBody,
+  Paper,
+  TableContainer,
+} from '@mui/material'
 const BlogPage = () => {
   const id = useParams().id
   const blogs = useSelector((state) => state.blogs)
@@ -43,11 +52,17 @@ const BlogPage = () => {
             add comment
           </Button>
         </form>
-        <ul>
-          {blog.comments.map((comment, index) => (
-            <li key={index}>{comment}</li>
-          ))}
-        </ul>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              {blog.comments.map((comment, index) => (
+                <TableRow key={index} className="blog">
+                  <TableCell>{comment}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   )

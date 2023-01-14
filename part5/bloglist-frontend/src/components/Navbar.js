@@ -1,32 +1,31 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../reducers/userReducer'
 import { Link } from 'react-router-dom'
-
+import { AppBar, Toolbar, IconButton, Button, Typography } from '@mui/material'
 const Navbar = () => {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user.name)
   const handleLogout = () => {
     dispatch(logout())
   }
 
-  const navbarStyle = {
-    padding: 5,
-    background: 'lightgray',
-  }
-  const navElementStyle = {
-    paddingRight: 5,
-  }
-
   return (
-    <div style={navbarStyle} className="navbar">
-      <Link to="/" style={navElementStyle}>
-        blogs
-      </Link>
-      <Link to="/users" style={navElementStyle}>
-        users
-      </Link>
-      {user.name} logged in <button onClick={handleLogout}>logout</button>
-    </div>
+    <AppBar position="static">
+      <Toolbar>
+        <IconButton edge="start" color="inherit" aria-label="menu" />
+        <Button color="inherit" component={Link} to="/users">
+          home
+        </Button>
+        <Button color="inherit" component={Link} to="/users">
+          users
+        </Button>
+
+        <Typography>{user} logged in</Typography>
+        <Button color="inherit" onClick={handleLogout}>
+          logout
+        </Button>
+      </Toolbar>
+    </AppBar>
   )
 }
 export default Navbar
