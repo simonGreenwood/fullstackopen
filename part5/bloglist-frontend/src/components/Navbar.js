@@ -19,11 +19,10 @@ const Navbar = () => {
         <Button color="inherit" component={Link} to="/users">
           users
         </Button>
-
-        <Typography>{user} logged in</Typography>
         <Button color="inherit" onClick={handleLogout}>
           logout
         </Button>
+        <Typography color="inherit">{user} logged in</Typography>
       </Toolbar>
     </AppBar>
   )
