@@ -1,20 +1,15 @@
 {
   "name": "part8",
   "version": "1.0.0",
-  "description": "fullstackopen part 8 graphql",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "github.com/simonGreenwood/fullstackopen"
-  },
   "author": "simon greenwood",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.11.1",
-    "graphql": "^16.6.0",
-    "install": "^0.13.0"
+    "apollo-server": "^3.10.1",
+    "graphql": "^16.6.0"
   }
 }
