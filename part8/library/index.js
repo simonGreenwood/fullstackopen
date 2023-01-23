@@ -156,6 +156,17 @@ const resolvers = {
       if (books.find((book) => book.title == args.title)) {
         throw new UserInputError("Title must be unique")
       }
+      console.log(authors.find((author) => author.name == args.author))
+      if (authors.find((author) => author.name == args.author)) {
+        console.log("Author not in db")
+        const newAuthor = {
+          name: args.author,
+          id: uuid(),
+        }
+        console.log(newAuthor)
+        authors = authors.concat(newAuthor)
+      }
+      console.log("author in db")
       const newBook = { ...args, id: uuid() }
       books = books.concat(newBook)
       return newBook
