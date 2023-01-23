@@ -120,9 +120,10 @@ const typeDefs = gql`
       published: Int!
       author: String!
       genres: [String!]!
-    ): Book!,
+    ): Book!
+
     editAuthor(
-      name: String!,
+      name: String!
       setBornTo: Int!
     ): Author
 
@@ -162,33 +163,29 @@ const resolvers = {
         throw new UserInputError("Title must be unique")
       }
       if (!authors.find((author) => author.name == args.author)) {
-
-        console.log("Author not in db")
         const newAuthor = {
           name: args.author,
           id: uuid(),
         }
-        console.log(newAuthor)
         authors = authors.concat(newAuthor)
-        console.log(authors)
       }
-      console.log("author in db")
       const newBook = { ...args, id: uuid() }
       books = books.concat(newBook)
       return newBook
     },
+  
+    editAuthor: (root, args) => {
+      const author = authors.find((author) => author.name === args.name)
+      if (!author) {
+        return null
+      }
+      const updatedAuthor = { ...author, born: args.setBornTo }
+      authors = authors.map((author) =>
+        author.name === args.name ? updatedAuthor : author
+      )
+      return updatedAuthor
+    },
   },
-  editAuthor: (root, args) => {
-    const author = authors.find((author) => author.name === args.name)
-    if (!author) {
-      return null
-    }
-    const updatedAuthor = { ...author, born: args.setBornTo }
-    authors = authors.map((author) =>
-      author.name === args.name ? updatedAuthor : author
-    )
-    return updatedAuthor
-  }
 }
 
 const server = new ApolloServer({
