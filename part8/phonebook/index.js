@@ -90,7 +90,7 @@ const resolvers = {
       return person
     },
     editNumber: (root, args) => {
-      const person = persons.find((p) => p.name === person.name)
+      const person = persons.find((p) => p.name === args.name)
       if (!person) {
         return null
       }
