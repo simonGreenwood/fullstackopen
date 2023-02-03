@@ -6,12 +6,15 @@ import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from "../queries"
 const NewBook = (props) => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
-  const [published, setPublished] = useState(null)
+  const [published, setPublished] = useState("")
   const [genre, setGenre] = useState("")
   const [genres, setGenres] = useState([])
 
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: [ALL_BOOKS, ALL_AUTHORS] }],
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: (error) => {
+      console.log(error.graphQLErrors[0].message)
+    },
   })
   if (!props.show) {
     return null
@@ -23,7 +26,7 @@ const NewBook = (props) => {
     addBook({
       variables: {
         title,
-        published,
+        published: Number(published),
         author,
         genres,
       },
@@ -62,7 +65,7 @@ const NewBook = (props) => {
           <input
             type="number"
             value={published}
-            onChange={({ target }) => setPublished(Number(target.value))}
+            onChange={({ target }) => setPublished(target.value)}
           />
         </div>
         <div>
