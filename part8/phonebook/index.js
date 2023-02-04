@@ -1,6 +1,22 @@
 const { ApolloServer, UserInputError, gql } = require("apollo-server")
 const { v1: uuid } = require("uuid")
 
+const mongoose = require("mongoose")
+mongoose.set("strictQuery", false)
+const Person = require("./models/Person")
+const { GraphQLError } = require("graphql")
+
+const MONGODB_URI = process.env.MONGODB_URI
+console.log("connecting to", MONGODB_URI)
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("connected to mongodb")
+  })
+  .catch((error) => {
+    console.log("error connecting to mongodb:", error.message)
+  })
+
 let persons = [
   {
     name: "Arto Hellas",
@@ -59,16 +75,14 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    personCount: () => persons.length,
+    personCount: () => Person.collection.countDocuments(),
     allPersons: (root, args) => {
       if (!args.phone) {
-        return persons
+        return Person.find({})
       }
-      const byPhone = (person) =>
-        args.phone === "YES" ? person.phone : !person.phone
-      return persons.filter(byPhone)
+      return Person.find({ phone: { $exists: args.phone === "YES" } })
     },
-    findPerson: (root, args) => persons.find((p) => p.name === args.name),
+    findPerson: (root, args) => Person.findOne({ name: args.name }),
   },
   Person: {
     address: (root) => {
@@ -79,24 +93,36 @@ const resolvers = {
     },
   },
   Mutation: {
-    addPerson: (root, args) => {
-      if (persons.find((p) => p.name === args.name)) {
-        throw new UserInputError("Name must be unique", {
-          invalidArgs: args.name,
+    addPerson: async (root, args) => {
+      const person = new Person({ ...args })
+      try {
+        await person.save()
+      } catch (error) {
+        throw new GraphQLError("Saving person failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error,
+          },
         })
       }
-      const person = { ...args, id: uuid() }
-      persons = persons.concat(person)
       return person
     },
-    editNumber: (root, args) => {
-      const person = persons.find((p) => p.name === args.name)
-      if (!person) {
-        return null
+    editNumber: async (root, args) => {
+      const person = await Person.findOne({ name: args.name })
+      person.phone = args.phone
+      try {
+        await person.save()
+      } catch (error) {
+        throw new GraphQLError("Saving number failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error,
+          },
+        })
       }
-      const updatedPerson = { ...person, phone: args.phone }
-      persons = persons.map((p) => (p.name === args.name ? updatedPerson : p))
-      return updatedPerson
+      return person
     },
   },
 }
