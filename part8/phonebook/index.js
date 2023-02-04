@@ -3,9 +3,13 @@ const { v1: uuid } = require("uuid")
 
 const mongoose = require("mongoose")
 mongoose.set("strictQuery", false)
-const Person = require("./models/Person")
-const { GraphQLError } = require("graphql")
 
+const Person = require("./models/Person")
+
+const { GraphQLError } = require("graphql")
+require("dotenv").config()
+const jwt = require("jsonwebtoken")
+const User = require("./models/User")
 const MONGODB_URI = process.env.MONGODB_URI
 console.log("connecting to", MONGODB_URI)
 mongoose
@@ -29,6 +33,13 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type User {
+    username: String!
+    friends: [Person!]!
+  }
+  type Token {
+    value: String!
+  }
   enum YesNo {
     YES
     NO
@@ -37,6 +48,7 @@ const typeDefs = gql`
     personCount: Int!
     allPersons(phone: YesNo): [Person!]!
     findPerson(name: String!): Person
+    me: User
   }
 
   type Mutation {
@@ -47,6 +59,8 @@ const typeDefs = gql`
       city: String!
     ): Person
     editNumber(name: String!, phone: String!): Person
+    createUser(username: String!): User
+    login(username: String!, password: String!): Token
   }
 `
 
@@ -100,6 +114,34 @@ const resolvers = {
         })
       }
       return person
+    },
+    createUser: async (root, args) => {
+      const user = new User({ username: args.username })
+
+      return user.save().catch((error) => {
+        throw new GraphQLError("Creating the user failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      })
+    },
+    login: async (root, args) => {
+      const user = User.findOne({ username: args.username })
+      if (!user || args.password !== "secret") {
+        throw new GraphQLError("wrong credentials", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        })
+      }
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      }
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
     },
   },
 }
