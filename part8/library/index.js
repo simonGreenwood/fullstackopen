@@ -1,4 +1,5 @@
-const { ApolloServer, gql, UserInputError } = require("apollo-server")
+const { ApolloServer } = require("@apollo/server")
+const { startStandaloneServer } = require("@apollo/server/standalone")
 const { v1: uuid } = require("uuid")
 let authors = [
   {
@@ -92,7 +93,7 @@ let books = [
   },
 ]
 
-const typeDefs = gql`
+const typeDefs = `
   type Query {
     bookCount: Int!
     authorCount: Int!
@@ -104,8 +105,8 @@ const typeDefs = gql`
     title: String!
     published: Int!
     author: String!
+    genres: [String!]!
     id: ID!
-    genres: [String]!
   }
 
   type Author {
@@ -122,11 +123,7 @@ const typeDefs = gql`
       genres: [String!]!
     ): Book!
 
-    editAuthor(
-      name: String!
-      setBornTo: Int!
-    ): Author
-
+    editAuthor(name: String!, setBornTo: Int!): Author
   }
 `
 
@@ -160,7 +157,12 @@ const resolvers = {
   Mutation: {
     addBook: (root, args) => {
       if (books.find((book) => book.title == args.title)) {
-        throw new UserInputError("Title must be unique")
+        throw new GraphQLError("Title must be unique", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+          },
+        })
       }
       if (!authors.find((author) => author.name == args.author)) {
         const newAuthor = {
@@ -173,7 +175,7 @@ const resolvers = {
       books = books.concat(newBook)
       return newBook
     },
-  
+
     editAuthor: (root, args) => {
       const author = authors.find((author) => author.name === args.name)
       if (!author) {
@@ -192,7 +194,8 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 })
-
-server.listen().then(({ url }) => {
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+}).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
