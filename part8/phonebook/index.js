@@ -1,4 +1,5 @@
-const { ApolloServer, UserInputError, gql } = require("apollo-server")
+const { ApolloServer } = require("@apollo/server")
+const { startStandaloneServer } = require("@apollo/server/standalone")
 const { v1: uuid } = require("uuid")
 
 const mongoose = require("mongoose")
@@ -21,7 +22,7 @@ mongoose
     console.log("error connecting to mongodb:", error.message)
   })
 
-const typeDefs = gql`
+const typeDefs = `
   type Address {
     street: String!
     city: String!
@@ -36,6 +37,7 @@ const typeDefs = gql`
   type User {
     username: String!
     friends: [Person!]!
+    id: ID!
   }
   type Token {
     value: String!
@@ -58,9 +60,17 @@ const typeDefs = gql`
       street: String!
       city: String!
     ): Person
-    editNumber(name: String!, phone: String!): Person
-    createUser(username: String!): User
-    login(username: String!, password: String!): Token
+    editNumber(
+      name: String!
+      phone: String!
+    ): Person
+    createUser(
+      username: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
@@ -74,6 +84,9 @@ const resolvers = {
       return Person.find({ phone: { $exists: args.phone === "YES" } })
     },
     findPerson: (root, args) => Person.findOne({ name: args.name }),
+    me: (root, args, context) => {
+      return context.currentUser
+    },
   },
   Person: {
     address: (root) => {
@@ -129,7 +142,7 @@ const resolvers = {
       })
     },
     login: async (root, args) => {
-      const user = User.findOne({ username: args.username })
+      const user = await User.findOne({ username: args.username })
       if (!user || args.password !== "secret") {
         throw new GraphQLError("wrong credentials", {
           extensions: {
@@ -151,6 +164,18 @@ const server = new ApolloServer({
   resolvers,
 })
 
-server.listen().then(({ url }) => {
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.startsWith("Bearer ")) {
+      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+      const currentUser = await User.findById(decodedToken.id).populate(
+        "friends"
+      )
+      return { currentUser }
+    }
+  },
+}).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
