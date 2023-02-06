@@ -1,6 +1,9 @@
 const { ApolloServer } = require("@apollo/server")
 const { startStandaloneServer } = require("@apollo/server/standalone")
 const { v1: uuid } = require("uuid")
+require("dotenv").config()
+const Author = require("./models/Author")
+const Book = require("./models/Book")
 let authors = [
   {
     name: "Robert Martin",
@@ -165,10 +168,11 @@ const resolvers = {
         })
       }
       if (!authors.find((author) => author.name == args.author)) {
-        const newAuthor = {
+        const newAuthor = new Author({
           name: args.author,
           id: uuid(),
-        }
+        })
+        console.log(newAuthor)
         authors = authors.concat(newAuthor)
       }
       const newBook = { ...args, id: uuid() }
