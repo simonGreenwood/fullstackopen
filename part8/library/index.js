@@ -4,6 +4,13 @@ const { v1: uuid } = require("uuid")
 require("dotenv").config()
 const Author = require("./models/Author")
 const Book = require("./models/Book")
+const mongoose = require("mongoose")
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("connected to", process.env.MONGODB_URI)
+  })
+  .catch((error) => console.log(error))
 let authors = [
   {
     name: "Robert Martin",
@@ -158,7 +165,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: (root, args) => {
+    addBook: async (root, args) => {
       if (books.find((book) => book.title == args.title)) {
         throw new GraphQLError("Title must be unique", {
           extensions: {
@@ -170,13 +177,12 @@ const resolvers = {
       if (!authors.find((author) => author.name == args.author)) {
         const newAuthor = new Author({
           name: args.author,
-          id: uuid(),
         })
-        console.log(newAuthor)
-        authors = authors.concat(newAuthor)
+        await newAuthor.save()
       }
-      const newBook = { ...args, id: uuid() }
-      books = books.concat(newBook)
+      const newBook = new Book({ ...args })
+      console.log(newBook)
+      await newBook.save()
       return newBook
     },
 
