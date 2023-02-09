@@ -5,6 +5,7 @@ require("dotenv").config()
 const Author = require("./models/Author")
 const Book = require("./models/Book")
 const mongoose = require("mongoose")
+const { GraphQLError } = require("graphql")
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -172,14 +173,34 @@ const resolvers = {
         const newAuthor = new Author({
           name: args.author,
         })
-        await newAuthor.save()
+        try {
+          await newAuthor.save()
+        } catch {
+          throw new GraphQLError("error creating author", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: args.name,
+              error,
+            },
+          })
+        }
       }
       const theAuthor = await Author.findOne({ name: args.author })
       const newBook = new Book({
         ...args,
         author: theAuthor._id,
       })
-      await newBook.save()
+      try {
+        await newBook.save()
+      } catch {
+        throw new GraphQLError("Changing number failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
       return newBook
     },
 
@@ -189,7 +210,17 @@ const resolvers = {
         return null
       }
       author.born = args.setBornTo
-      await author.save()
+      try {
+        await author.save()
+      } catch {
+        throw new GraphQLError("Changing number failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
       return author
     },
   },
