@@ -6,6 +6,7 @@ const Author = require("./models/Author")
 const Book = require("./models/Book")
 const mongoose = require("mongoose")
 const { GraphQLError } = require("graphql")
+const User = require("./models/User")
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -243,6 +244,21 @@ const resolvers = {
         })
       }
       return author
+    },
+    createUser: async (root, args) => {
+      const newUser = new User({ ...args })
+      try {
+        await newUser.save()
+      } catch {
+        throw new GraphQLError("Error when creating new user", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
+      return newUser
     },
   },
 }
