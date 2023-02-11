@@ -182,6 +182,9 @@ const resolvers = {
     allAuthors: async (root, args) => {
       return Author.find({})
     },
+    me: async (root, args, context) => {
+      return context.currentUser
+    },
   },
   Author: {
     bookCount: (root, args) => {
@@ -263,7 +266,7 @@ const resolvers = {
     },
     login: async (root, args) => {
       const password = "secret"
-      const user = User.findOne({ username: args.username })
+      const user = await User.findOne({ username: args.username })
       if (!user || args.password !== password) {
         throw new GraphQLError("wrong credentials", {
           extensions: {
@@ -276,7 +279,13 @@ const resolvers = {
         username: user.username,
         id: user._id,
       }
-
+      console.log(process.env.JWT_SECRET, userForToken)
+      console.log(
+        jwt.verify(
+          jwt.sign(userForToken, process.env.JWT_SECRET),
+          process.env.JWT_SECRET
+        )
+      )
       return {
         value: jwt.sign(userForToken, process.env.JWT_SECRET),
       }
@@ -290,6 +299,14 @@ const server = new ApolloServer({
 })
 startStandaloneServer(server, {
   listen: { port: 4000 },
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.startsWith("Bearer ")) {
+      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
