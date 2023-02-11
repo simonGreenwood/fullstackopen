@@ -193,15 +193,21 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: async (root, args) => {
-      console.log((await Author.find({ name: args.author }).length) === 0)
-      if ((await Author.find({ name: args.author }).length) === 0) {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        })
+      }
+      if (!(await Author.findOne({ name: args.author }))) {
         const newAuthor = new Author({
           name: args.author,
         })
         try {
           await newAuthor.save()
-        } catch {
+        } catch (error) {
           throw new GraphQLError("error creating author", {
             extensions: {
               code: "BAD_USER_INPUT",
@@ -218,8 +224,8 @@ const resolvers = {
       })
       try {
         await newBook.save()
-      } catch {
-        throw new GraphQLError("Changing number failed", {
+      } catch (error) {
+        throw new GraphQLError("saving book failed", {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidArgs: args.name,
@@ -230,7 +236,14 @@ const resolvers = {
       return newBook
     },
 
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        })
+      }
       const author = await Author.findOne({ name: args.name })
       if (!author) {
         return null
@@ -238,7 +251,7 @@ const resolvers = {
       author.born = args.setBornTo
       try {
         await author.save()
-      } catch {
+      } catch (error) {
         throw new GraphQLError("Changing number failed", {
           extensions: {
             code: "BAD_USER_INPUT",
@@ -253,7 +266,7 @@ const resolvers = {
       const newUser = new User({ ...args })
       try {
         await newUser.save()
-      } catch {
+      } catch (error) {
         throw new GraphQLError("Error when creating new user", {
           extensions: {
             code: "BAD_USER_INPUT",
