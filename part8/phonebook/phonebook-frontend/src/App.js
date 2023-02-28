@@ -3,9 +3,9 @@ import { useState } from "react"
 
 import { ALL_PERSONS } from "./queries"
 
-import PersonForm from "./components/personForm"
-import Persons from "./components/persons"
-import PhoneForm from "./components/phoneForm"
+import PersonForm from "./components/PersonForm"
+import Persons from "./components/Persons"
+import PhoneForm from "./components/PhoneForm"
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
