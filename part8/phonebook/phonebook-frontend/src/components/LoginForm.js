@@ -46,3 +46,4 @@ const LoginForm = ({setError, setToken}) => {
     </div>
   )
 }
+export default LoginForm
