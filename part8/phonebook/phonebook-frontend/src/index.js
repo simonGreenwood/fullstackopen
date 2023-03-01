@@ -8,6 +8,7 @@ import {
   createHttpLink
 } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
+<<<<<<< HEAD
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('phonenumbers-user-token')
@@ -22,7 +23,21 @@ const authLink = setContext((_, { headers }) => {
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000'
 })
+=======
+>>>>>>> 653a677ceadbf1ef19e8cf333c34a02586ec29c2
 
+const authLink = setContext((_, {headers}) => {
+  const token = localStorage.getItem("phonenumbers-user-token")
+  return {  
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : null,
+    }
+  }
+})
+const httpLink = createHttpLink({
+  uri: "http://localhost:4000",
+})
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(httpLink)
