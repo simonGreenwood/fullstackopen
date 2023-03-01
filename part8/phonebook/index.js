@@ -91,10 +91,17 @@ const resolvers = {
   },
   Mutation: {
     addPerson: async (root, args, { currentUser }) => {
+      console.log(currentUser)
       const person = new Person({ ...args })
+      if(!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT"
+          }
+        })
+      }
       try {
         await person.save()
-        console.log(currentUser)
         currentUser.friends = currentUser.friends.concat(person)
         await currentUser.save()
       } catch (error) {
@@ -125,6 +132,7 @@ const resolvers = {
       return person
     },
     createUser: async (root, args) => {
+
       const user = new User({ username: args.username })
 
       return user.save().catch((error) => {
