@@ -17,7 +17,7 @@ const App = () => {
       <Authors show={page === "authors"} />
       <Books show={page === "books"} />
       <NewBook show={page === "add"} />
-      <Login show={page === "login"} />
+      <Login show={page === "login"} setToken={setToken} />
     </div>
   )
 }

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { LOGIN } from "../queries"
 
 const Login = ({ setToken }) => {
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
@@ -15,7 +17,7 @@ const Login = ({ setToken }) => {
       setToken(token)
       localStorage.setItem("phonenumbers-user-token", token)
     }
-  }, [result.data])
+  }, [result.data]) //eslint-disable-line
 
   const submit = async (event) => {
     event.preventDefault()
@@ -31,7 +33,16 @@ const Login = ({ setToken }) => {
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
+        <div>
+          password{" "}
+          <input
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">submit</button>
       </form>
     </div>
   )
 }
+export default Login
