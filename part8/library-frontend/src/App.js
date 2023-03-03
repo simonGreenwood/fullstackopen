@@ -8,13 +8,16 @@ const App = () => {
   const [page, setPage] = useState("authors")
   const [token, setToken] = useState(null)
 
-  useEffect(() => {})
+  useEffect(() => {
+    const storedToken = localStorage.getItem("library-user-token")
+    if (!storedToken) return
+    setToken(storedToken)
+  }, []) //eslint-disable-line
 
   return (
     <div>
       <Navbar setPage={setPage} token={token} setToken={setToken} />
-
-      <Authors show={page === "authors"} />
+      <Authors show={page === "authors"} token={token} />
       <Books show={page === "books"} />
       <NewBook show={page === "add"} />
       <Login show={page === "login"} setToken={setToken} />

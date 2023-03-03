@@ -56,21 +56,24 @@ const Authors = (props) => {
               <td>{a.bookCount}</td>
             </tr>
           ))}
+          {console.log(authors.data.allAuthors)}
         </tbody>
       </table>
-      <form onSubmit={(e) => handleBirthyearSubmit(e)}>
-        <h3>Set birthyear</h3>
-        <Select options={options} onChange={(e) => setName(e.label)} />
-        <div>
-          born
-          <input
-            type="number"
-            value={born}
-            onChange={({ target }) => setBorn(target.value)}
-          />
-        </div>
-        <button action="submit">update author</button>
-      </form>
+      {props.token ? (
+        <form onSubmit={(e) => handleBirthyearSubmit(e)}>
+          <h3>Set birthyear</h3>
+          <Select options={options} onChange={(e) => setName(e.label)} />
+          <div>
+            born
+            <input
+              type="number"
+              value={born}
+              onChange={({ target }) => setBorn(target.value)}
+            />
+          </div>
+          <button action="submit">update author</button>
+        </form>
+      ) : null}
     </div>
   )
 }
