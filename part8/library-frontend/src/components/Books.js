@@ -4,9 +4,9 @@ import { ALL_BOOKS } from "../queries"
 const Books = (props) => {
   const [genres, setGenres] = useState([])
   const [filter, setFilter] = useState(null)
-  const [books, setBooks] = useState([])
-  const result = useQuery(ALL_BOOKS)
-
+  const result = useQuery(ALL_BOOKS, {
+    variables: filter ? { genre: filter } : {},
+  })
   useEffect(() => {
     if (result.loading) return
     result.data.allBooks.map((book) =>
@@ -16,16 +16,11 @@ const Books = (props) => {
     )
   }, [result, genres])
   useEffect(() => {
-    if (result.loading) return
-    setBooks(
-      result.data.allBooks.filter((book) => book.genres.includes(filter))
-    )
-  }, [result, filter])
-
+    result.refetch({ genre: filter })
+  }, [filter, result])
   if (!props.show) {
     return null
   }
-
   if (result.loading) {
     return <h1>Loading...</h1>
   }
@@ -40,9 +35,7 @@ const Books = (props) => {
             <th>published</th>
           </tr>
           {result.data.allBooks
-            .filter((book) =>
-              filter ? book.genres.includes(filter) : book.genres
-            )
+            .filter((book) => (filter ? book.genres.includes(filter) : true))
             .map((a) => (
               <tr key={a.title}>
                 <td>{a.title}</td>
@@ -54,9 +47,11 @@ const Books = (props) => {
       </table>
       <div>
         {genres.map((genre) => (
-          <button onClick={setFilter(genre)}>{genre}</button>
+          <button key={genre} onClick={() => setFilter(genre)}>
+            {genre}
+          </button>
         ))}
-        <button onClick={setFilter(null)}>all genres</button>
+        <button onClick={() => setFilter(null)}>all genres</button>
       </div>
     </div>
   )
