@@ -57,3 +57,10 @@ export const LOGIN = gql`
     }
   }
 `
+export const ME = gql`
+  mutation {
+    me {
+      favouriteGenre
+    }
+  }
+`
