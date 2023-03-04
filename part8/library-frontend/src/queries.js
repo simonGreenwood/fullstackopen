@@ -58,7 +58,7 @@ export const LOGIN = gql`
   }
 `
 export const ME = gql`
-  mutation {
+  query {
     me {
       favouriteGenre
     }
