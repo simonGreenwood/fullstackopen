@@ -27,6 +27,13 @@ const Books = (props) => {
   return (
     <div>
       <h2>books</h2>
+      {filter ? (
+        <p>
+          in genre <strong>{filter}</strong>
+        </p>
+      ) : (
+        <></>
+      )}
       <table>
         <tbody>
           <tr>

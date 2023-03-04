@@ -15,6 +15,13 @@ const NewBook = (props) => {
     onError: (error) => {
       console.log(error.graphQLErrors[0].message)
     },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(response.data.allBooks),
+        }
+      })
+    },
   })
   if (!props.show) {
     return null
