@@ -29,7 +29,6 @@ mongoose
   .catch((error) => {
     console.log("error connecting to mongodb:", error.message)
   })
-
 const start = async () => {
   const app = express()
   const httpServer = http.createServer(app)
