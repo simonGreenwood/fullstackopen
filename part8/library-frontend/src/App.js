@@ -18,10 +18,11 @@ export const updateCache = (cache, query, addedBook) => {
       return seen.has(k) ? false : seen.add(k)
     })
   }
-
-  cache.updateQuery(query, ({ allPersons }) => {
+  console.log("updateCache", addedBook)
+  cache.updateQuery(query, ({ allBooks }) => {
+    console.log(allBooks)
     return {
-      allPersons: uniqByName(allPersons.concat(addedPerson)),
+      allBooks: uniqByName(allBooks.concat(addedBook)),
     }
   })
 }
@@ -32,16 +33,17 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
-      const addedBook = data.data.personAdded
-      //update the cache
+      const addedBook = data.data.bookAdded
+      console.log(addedBook)
       updateCache(
         client.cache,
         {
           query: ALL_BOOKS,
-          variables: { genre: "dystopia" },
+          variables: { genre: "" },
         },
         addedBook
       )
+      console.log(client.cache.readQuery({ query: ALL_BOOKS }))
     },
   })
 

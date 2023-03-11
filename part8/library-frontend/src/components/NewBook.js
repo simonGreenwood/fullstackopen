@@ -17,11 +17,12 @@ const NewBook = (props) => {
       console.log(error.graphQLErrors[0])
     },
     update: (cache, response) => {
+      console.log(response.data.addBook, cache)
       updateCache(
         cache,
         {
           query: ALL_BOOKS,
-          variables: { genre: "dystopia" },
+          variables: { genre: null },
         },
         response.data.addBook
       )
