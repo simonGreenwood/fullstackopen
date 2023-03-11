@@ -12,7 +12,7 @@ const Recommended = ({ show }) => {
     if (meResult.loading) return
     setFavourite(meResult.data.me.favouriteGenre)
     booksResult.refetch()
-  }, [meResult])
+  }, [meResult, booksResult])
 
   if (!show) return
   if (booksResult.loading || meResult.loading) return <h1>Loading...</h1>

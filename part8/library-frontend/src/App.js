@@ -11,19 +11,17 @@ import Login from "./components/Login"
 import Recommended from "./components/Recommended"
 
 export const updateCache = (cache, query, addedBook) => {
-  // helper that is used to eliminate saving same person twice
   const uniqByName = (a) => {
     let seen = new Set()
     return a.filter((item) => {
-      let k = item.name
+      let k = item.title
       return seen.has(k) ? false : seen.add(k)
     })
   }
 
-  cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-    console.log(allBooks, addedBook)
+  cache.updateQuery(query, ({ allPersons }) => {
     return {
-      allBooks: uniqByName(allBooks.concat(addedBook)),
+      allPersons: uniqByName(allPersons.concat(addedPerson)),
     }
   })
 }
@@ -34,11 +32,16 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
-      const newBook = data.data.bookAdded
-      cache.updateQuery({ query: ALL_BOOKS }, (r) => {
-        console.log(r)
-      })
-      updateCache(client.cache, { query: ALL_BOOKS }, newBook)
+      const addedBook = data.data.personAdded
+      //update the cache
+      updateCache(
+        client.cache,
+        {
+          query: ALL_BOOKS,
+          variables: { genre: "dystopia" },
+        },
+        addedBook
+      )
     },
   })
 

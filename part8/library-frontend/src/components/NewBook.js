@@ -17,7 +17,14 @@ const NewBook = (props) => {
       console.log(error.graphQLErrors[0])
     },
     update: (cache, response) => {
-      updateCache(cache, { query: ALL_BOOKS }, response.data.addBook)
+      updateCache(
+        cache,
+        {
+          query: ALL_BOOKS,
+          variables: { genre: "dystopia" },
+        },
+        response.data.addBook
+      )
     },
   })
   if (!props.show) {
