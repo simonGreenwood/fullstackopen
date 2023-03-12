@@ -18,6 +18,8 @@ const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
+const loaders = require("./loaders")
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -67,7 +69,10 @@ const start = async () => {
             process.env.JWT_SECRET
           )
           const currentUser = await User.findById(decodedToken.id)
-          return { currentUser }
+          return {
+            currentUser,
+            loaders,
+          }
         }
       },
     })

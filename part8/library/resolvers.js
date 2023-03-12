@@ -7,6 +7,7 @@ const { GraphQLError } = require("graphql")
 const { PubSub } = require("graphql-subscriptions")
 const pubsub = new PubSub()
 
+const loaders = require("./loaders")
 const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
@@ -27,6 +28,7 @@ const resolvers = {
       }).populate("author")
     },
     allAuthors: async (root, args) => {
+      console.log("author.find")
       return Author.find({})
     },
     me: async (root, args, context) => {
@@ -34,9 +36,8 @@ const resolvers = {
     },
   },
   Author: {
-    bookCount: async (root, args) => {
-      const booksByAuthor = await Book.find({ author: root.id })
-      return booksByAuthor.length
+    bookCount: async (root, args, { loaders }) => {
+      return loaders.bookCountLoader.load(root.id)
     },
   },
   Mutation: {
