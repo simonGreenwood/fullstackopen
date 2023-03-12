@@ -1,4 +1,17 @@
-const calculateExercises = (hours: number[], target: number) => {
+interface CalculatedExercises {
+  periodLength: number;
+  trainingDays: number;
+  success: boolean;
+  rating: number;
+  ratingDescription: string;
+  target: number;
+  average: number;
+}
+
+const calculateExercises = (
+  hours: number[],
+  target: number
+): CalculatedExercises => {
   const average: number = hours.reduce((a, b) => a + b, 0) / hours.length;
 
   let rating: number = 0;
