@@ -1,4 +1,4 @@
-import { isNotNumber } from "./utils";
+import { handleError, isNotNumber } from "./utils";
 
 const calculateBmi = (height: number, weight: number): string => {
   const bmi: number = weight / (height / 100) ** 2;
@@ -32,9 +32,5 @@ try {
   const { height, weight } = parseArguments(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (error: unknown) {
-  let errorMessage = "something went wrong";
-  if (error instanceof Error) {
-    errorMessage += error;
-  }
-  console.log(errorMessage);
+  console.log(handleError(error));
 }
