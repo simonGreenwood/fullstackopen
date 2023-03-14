@@ -1,4 +1,4 @@
-import { containsNotNumber, handleError, isNotNumber } from "./utils";
+import { handleError, isNotNumber } from "./utils";
 interface CalculatedExercises {
   periodLength: number;
   trainingDays: number;
