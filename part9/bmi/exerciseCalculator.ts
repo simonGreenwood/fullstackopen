@@ -1,3 +1,4 @@
+import { isNotNumber } from "./utils";
 interface CalculatedExercises {
   periodLength: number;
   trainingDays: number;
@@ -7,7 +8,10 @@ interface CalculatedExercises {
   target: number;
   average: number;
 }
-
+interface Exercises {
+  target: number;
+  hours: number[];
+}
 const calculateExercises = (
   hours: number[],
   target: number
@@ -40,3 +44,17 @@ const calculateExercises = (
 };
 console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
 console.log(process.argv.slice(3));
+
+const parseArguments = (args: string[]): Exercises => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const hours: number[] = args.slice(3).map((hour) => Number(hour));
+  const target: number = Number(args[2]);
+
+  if (!isNotNumber(args[2])) {
+    return {
+      hours,
+      target,
+    };
+  }
+};
