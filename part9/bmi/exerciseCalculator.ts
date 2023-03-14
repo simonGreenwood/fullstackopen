@@ -1,4 +1,4 @@
-import { isNotNumber } from "./utils";
+import { containsNotNumber, handleError, isNotNumber } from "./utils";
 interface CalculatedExercises {
   periodLength: number;
   trainingDays: number;
@@ -42,19 +42,29 @@ const calculateExercises = (
     average,
   };
 };
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
-console.log(process.argv.slice(3));
 
 const parseArguments = (args: string[]): Exercises => {
   if (args.length < 4) throw new Error("Not enough arguments");
+  const hours = args.slice(3).map((hour) => {
+    const asNumber = Number(hour);
+    if (!isNotNumber(hour)) return asNumber;
+    else throw new Error("Values aren't numbers!");
+  });
 
-  const hours: number[] = args.slice(3).map((hour) => Number(hour));
   const target: number = Number(args[2]);
-
-  if (!isNotNumber(args[2])) {
+  if (!isNotNumber(target)) {
     return {
       hours,
       target,
     };
+  } else {
+    throw new Error("Values aren't numbers!");
   }
 };
+
+try {
+  const { hours, target } = parseArguments(process.argv);
+  console.log(calculateExercises(hours, target));
+} catch (error: unknown) {
+  console.log(handleError(error));
+}
