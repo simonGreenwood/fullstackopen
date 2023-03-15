@@ -18,8 +18,8 @@ const calculateExercises = (
 ): CalculatedExercises => {
   const average: number = hours.reduce((a, b) => a + b, 0) / hours.length;
 
-  let rating: number = 0;
-  let ratingDescription: string = "";
+  let rating = 0;
+  let ratingDescription = "";
 
   if (average > target) {
     rating = 3;
@@ -51,7 +51,7 @@ const parseArguments = (args: string[]): Exercises => {
     else throw new Error("Values aren't numbers!");
   });
 
-  const target: number = Number(args[2]);
+  const target = Number(args[2]);
   if (!isNotNumber(target)) {
     return {
       hours,
