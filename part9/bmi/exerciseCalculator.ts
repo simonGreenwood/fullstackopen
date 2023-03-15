@@ -12,7 +12,7 @@ interface Exercises {
   target: number;
   hours: number[];
 }
-const calculateExercises = (
+export const calculateExercises = (
   hours: number[],
   target: number
 ): CalculatedExercises => {
