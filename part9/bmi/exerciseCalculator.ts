@@ -52,6 +52,7 @@ const parseArguments = (args: string[]): Exercises => {
   });
 
   const target = Number(args[2]);
+
   if (!isNotNumber(target)) {
     return {
       hours,
