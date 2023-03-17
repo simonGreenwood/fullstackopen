@@ -1,5 +1,5 @@
 import diagnoses from "../../data/diagnoses";
-export const getAllDiagnoses = () => {
-  console.log(diagnoses);
+import { Diagnosis } from "../types";
+export const getAllDiagnoses = (): Diagnosis[] => {
   return diagnoses;
 };
