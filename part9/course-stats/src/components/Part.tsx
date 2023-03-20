@@ -5,6 +5,13 @@ interface PartProps {
 }
 
 const Part = (props: PartProps) => {
+
+  const assertNever = (value: never): never => {
+    throw new Error(
+      `Unhandled discriminated union member: ${JSON.stringify(value)}`
+    );
+  };
+
   switch (props.part.kind) {
     case "basic":
       return (
@@ -36,6 +43,9 @@ const Part = (props: PartProps) => {
           <div>requirements: {props.part.requirements.join(", ")}</div>
         </div>
       )
+    default:
+      return assertNever(props.part)
+
   }
 };
 export default Part;
