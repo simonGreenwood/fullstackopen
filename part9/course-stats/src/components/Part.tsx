@@ -8,30 +8,34 @@ const Part = (props: PartProps) => {
   switch (props.part.kind) {
     case "basic":
       return (
-        <div>
-          <strong>{props.part.name}</strong>
-          <p>
-            <i>{props.part.description}</i>
-          </p>
+        <div style={{paddingBottom: 10}}>
+          <div><strong>{props.part.name} {props.part.exerciseCount}</strong></div>
+          <i>{props.part.description}</i>
         </div>
       );
     case "group":
       return (
-        <div>
-          <strong>{props.part.name}</strong>
-          <p>group exercises {props.part.groupProjectCount}</p>
+        <div style={{paddingBottom: 10}}>
+          <div><strong>{props.part.name} {props.part.exerciseCount}</strong></div>
+          group exercises: {props.part.groupProjectCount}
         </div>
       );
     case "background":
       return (
-        <div>
-          <strong>{props.part.name}</strong>
-          <p>
-            <i>{props.part.description}</i>
-          </p>
-          {props.part.backroundMaterial}
+        <div style={{paddingBottom: 10}}>
+          <div><strong>{props.part.name} {props.part.exerciseCount}</strong></div>
+          <div><i>{props.part.description}</i></div>
+          <div>background material: {props.part.backroundMaterial}</div>
         </div>
       );
+    case "special":
+      return (
+        <div style={{paddingBottom:10}}>
+          <div><strong>{props.part.name} {props.part.exerciseCount}</strong></div>
+          <div><i>{props.part.description}</i></div>
+          <div>requirements: {props.part.requirements.join(", ")}</div>
+        </div>
+      )
   }
 };
 export default Part;
