@@ -1,10 +1,10 @@
 import Header from "./components/Header";
 import Content from "./components/Content";
 import Total from "./components/Total";
-
 import { CoursePart } from "./types";
 const App = () => {
   const courseName = "Half Stack application development";
+
   const courseParts: CoursePart[] = [
     {
       name: "Fundamentals",
@@ -28,9 +28,15 @@ const App = () => {
       name: "Deeper type usage",
       exerciseCount: 14,
       description: "Confusing description",
-      backgroundMaterial:
+      backroundMaterial:
         "https://type-level-typescript.com/template-literal-types",
       kind: "background",
+    },
+    {
+      name: "TypeScript in frontend",
+      exerciseCount: 10,
+      description: "a hard part",
+      kind: "basic",
     },
   ];
 
