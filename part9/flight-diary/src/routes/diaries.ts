@@ -14,7 +14,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.get("/", (_req, res) => {
-  res.send(diaryService.getNonSensitiveEntries());
+  res.send(diaryService.getEntries());
 });
 
 router.post("/", (req, res) => {
