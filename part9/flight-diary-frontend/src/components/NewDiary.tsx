@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createDiary } from "../services/diaryService";
 
 const NewDiary = () => {
   const [date, setDate] = useState("");
@@ -7,7 +8,12 @@ const NewDiary = () => {
   const [comment, setComment] = useState("");
 
   const submit = () => {
-    return null;
+    createDiary({
+      date,
+      visibility,
+      weather,
+      comment,
+    });
   };
   return (
     <div>
