@@ -1,28 +1,26 @@
 import React, { useState } from "react";
 import { createDiary } from "../services/diaryService";
-import { ValidationError } from "../types";
-import axios from "axios";
 const NewDiary = () => {
   const [date, setDate] = useState("");
   const [visibility, setVisibility] = useState("");
   const [weather, setWeather] = useState("");
   const [comment, setComment] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const submit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    try {
-      createDiary({
-        date,
-        visibility,
-        weather,
-        comment,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    createDiary({
+      date,
+      visibility,
+      weather,
+      comment,
+    }).catch((error) => setErrorMessage(error.response.data));
   };
   return (
     <div>
+      <h3>Add new entry</h3>
+      <div style={{ color: "red" }}>{errorMessage}</div>
       <form onSubmit={(e) => submit(e)}>
         <div>
           date
