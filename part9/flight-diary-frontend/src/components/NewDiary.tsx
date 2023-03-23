@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { createDiary } from "../services/diaryService";
+import { Visibility, Weather } from "../types";
 const NewDiary = () => {
   const [date, setDate] = useState("");
-  const [visibility, setVisibility] = useState("");
-  const [weather, setWeather] = useState("");
+  const [visibility, setVisibility] = useState("great");
+  const [weather, setWeather] = useState("rainy");
   const [comment, setComment] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -12,9 +13,9 @@ const NewDiary = () => {
     event.preventDefault();
     createDiary({
       date,
+      comment,
       visibility,
       weather,
-      comment,
     }).catch((error) => setErrorMessage(error.response.data));
   };
   return (
@@ -24,18 +25,38 @@ const NewDiary = () => {
       <form onSubmit={(e) => submit(e)}>
         <div>
           date
-          <input value={date} onChange={(e) => setDate(e.target.value)} />
-        </div>
-        <div>
-          visibility
           <input
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            type="date"
           />
         </div>
         <div>
+          visibility
+          {Object.values(Visibility).map((v) => (
+            <>
+              <input
+                type="radio"
+                name="visibility"
+                onChange={() => setVisibility(v)}
+              />
+              <label>{v}</label>
+            </>
+          ))}
+        </div>
+        <div>
           weather
-          <input value={weather} onChange={(e) => setWeather(e.target.value)} />
+          {Object.values(Weather).map((w) => (
+            <>
+              <input
+                type="radio"
+                name="weather"
+                value={weather === w}
+                onChange={() => setWeather(w)}
+              />
+              <label>{w}</label>
+            </>
+          ))}
         </div>
         <div>
           comment
