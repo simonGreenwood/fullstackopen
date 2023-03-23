@@ -1,23 +1,29 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { createDiary } from "../services/diaryService";
-
+import { ValidationError } from "../types";
+import axios from "axios";
 const NewDiary = () => {
   const [date, setDate] = useState("");
   const [visibility, setVisibility] = useState("");
   const [weather, setWeather] = useState("");
   const [comment, setComment] = useState("");
 
-  const submit = () => {
-    createDiary({
-      date,
-      visibility,
-      weather,
-      comment,
-    });
+  const submit = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    try {
+      createDiary({
+        date,
+        visibility,
+        weather,
+        comment,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>
-      <form onSubmit={submit}>
+      <form onSubmit={(e) => submit(e)}>
         <div>
           date
           <input value={date} onChange={(e) => setDate(e.target.value)} />
