@@ -3,8 +3,8 @@ import { createDiary } from "../services/diaryService";
 import { Visibility, Weather } from "../types";
 const NewDiary = () => {
   const [date, setDate] = useState("");
-  const [visibility, setVisibility] = useState("great");
-  const [weather, setWeather] = useState("rainy");
+  const [visibility, setVisibility] = useState<Visibility>(Visibility.Great);
+  const [weather, setWeather] = useState<Weather>(Weather.Sunny);
   const [comment, setComment] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,6 +17,9 @@ const NewDiary = () => {
       visibility,
       weather,
     }).catch((error) => setErrorMessage(error.response.data));
+
+    setDate("");
+    setComment("");
   };
   return (
     <div>
@@ -29,6 +32,7 @@ const NewDiary = () => {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             type="date"
+            required={true}
           />
         </div>
         <div>
@@ -38,6 +42,7 @@ const NewDiary = () => {
               <input
                 type="radio"
                 name="visibility"
+                checked={visibility === v}
                 onChange={() => setVisibility(v)}
               />
               <label>{v}</label>
@@ -51,7 +56,7 @@ const NewDiary = () => {
               <input
                 type="radio"
                 name="weather"
-                value={weather === w}
+                checked={weather === w}
                 onChange={() => setWeather(w)}
               />
               <label>{w}</label>
@@ -60,7 +65,11 @@ const NewDiary = () => {
         </div>
         <div>
           comment
-          <input value={comment} onChange={(e) => setComment(e.target.value)} />
+          <input
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            required={true}
+          />
         </div>
         <button type="submit">add</button>
       </form>
