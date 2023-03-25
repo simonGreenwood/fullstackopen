@@ -12,8 +12,16 @@ router.get("/", (_req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  const patient = getPatientByID(req.params.id);
-  res.send(patient);
+  try {
+    const patient = getPatientByID(req.params.id);
+    res.json(patient);
+  } catch (error: unknown) {
+    let errorMessage = "something went wrong, ";
+    if (error instanceof Error) {
+      errorMessage += `Error: ${error}`;
+    }
+    res.status(400).send(errorMessage);
+  }
 });
 router.post("/", (req, res) => {
   try {
