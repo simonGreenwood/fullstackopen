@@ -1,4 +1,4 @@
-import { NewPatient, Gender, NonSensitivePatient } from "./types";
+import { NewPatient, Gender, NonSensitivePatient, Entry } from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -42,6 +42,13 @@ const parseGender = (gender: unknown) => {
   }
   return gender;
 };
+
+const parseID = (id: unknown) => {
+  if (!id || !isString(id)) {
+    throw new Error("invalid id");
+  }
+  return id;
+};
 export const toNewPatient = (patient: unknown): NewPatient => {
   if (!patient || typeof patient !== "object") {
     throw new Error("Incorrect or missing data");
@@ -53,12 +60,14 @@ export const toNewPatient = (patient: unknown): NewPatient => {
     "gender" in patient &&
     "occupation" in patient
   ) {
+    const entries: Entry[] = [];
     const newPatient: NewPatient = {
       name: parseName(patient.name),
       dateOfBirth: parseDateOfBirth(patient.dateOfBirth),
       ssn: parseSSN(patient.ssn),
       gender: parseGender(patient.gender),
       occupation: parseOccupation(patient.occupation),
+      entries,
     };
     return newPatient;
   }
@@ -72,6 +81,7 @@ export const toNonSensitivePatient = (
     throw new Error("Incorrect or missing data");
   }
   if (
+    "id" in patient &&
     "name" in patient &&
     "dateOfBirth" in patient &&
     "ssn" in patient &&
@@ -79,6 +89,7 @@ export const toNonSensitivePatient = (
     "occupation" in patient
   ) {
     const nonSensitivePatient: NonSensitivePatient = {
+      id: parseID(patient.id),
       name: parseName(patient.name),
       dateOfBirth: parseDateOfBirth(patient.dateOfBirth),
       gender: parseGender(patient.gender),
@@ -88,29 +99,3 @@ export const toNonSensitivePatient = (
   }
   throw new Error("fields are missing");
 };
-/*
-  {
-      "id": "d2773c6e-f723-11e9-8f0b-362b9e155667",
-      "name": "Matti Luukkainen",
-      "dateOfBirth": "1971-04-09",
-      "ssn": "090471-8890",
-      "gender": "male",
-      "occupation": "Digital evangelist"
-  }
-
-*/
-/*
-
-const isVisibility = (param: string): param is Visibility => {
-  return Object.values(Visibility)
-    .map((v) => v.toString())
-    .includes(param);
-};
-
-const parseVisibility = (visibility: unknown): Visibility => {
-  if (!isString(visibility) || !isVisibility(visibility)) {
-    throw new Error("Incorrect or missing visibility: " + visibility);
-  }
-  return visibility;
-};
-*/

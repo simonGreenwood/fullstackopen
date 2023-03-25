@@ -14,14 +14,19 @@ export const getAllPatientsWithoutSSN = (): NonSensitivePatient[] => {
   }));
 };
 
-export const getPatientByID = (id): NonSensitivePatient => {
-  const newPatient = 
-}
-export const addPatient = (patient: NewPatient): Patient[] => {
-  const patientWithId = {
+export const getPatientByID = (id: string): Patient => {
+  const newPatient = patients.find((patient) => patient.id === id);
+  if (!newPatient) {
+    throw new Error("Patient not found");
+  }
+  return newPatient;
+};
+export const addPatient = (patient: NewPatient): Patient => {
+  const patientWithId: Patient = {
     id: uuid(),
     ...patient,
   };
+  // add patient to the array of patients but first retype it
   patients.push(patientWithId);
-  return patients;
+  return patientWithId;
 };
