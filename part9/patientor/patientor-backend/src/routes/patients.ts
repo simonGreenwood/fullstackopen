@@ -1,7 +1,7 @@
 import {
   addPatient,
+  getAllPatientByID
   getAllPatientsWithoutSSN,
-  getPatientByID,
 } from "../services/patientsService";
 import express from "express";
 import { toNewPatient } from "../utils";
@@ -11,11 +11,9 @@ router.get("/", (_req, res) => {
   res.send(getAllPatientsWithoutSSN());
 });
 
-router.get("/:id", (req, res) => {
-  const patient = getPatientByID(req.params.id);
-  res.send(patient);
-});
-
+router.get("/:id",(req,res) => {
+  const patient = getPatientByID()
+})
 router.post("/", (req, res) => {
   try {
     const newPatient = toNewPatient(req.body);

@@ -1,4 +1,4 @@
-import { NewPatient, Gender } from "./types";
+import { NewPatient, Gender, NonSensitivePatient } from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -65,6 +65,29 @@ export const toNewPatient = (patient: unknown): NewPatient => {
   throw new Error("fields are missing");
 };
 
+export const toNonSensitivePatient = (
+  patient: unknown
+): NonSensitivePatient => {
+  if (!patient || typeof patient !== "object") {
+    throw new Error("Incorrect or missing data");
+  }
+  if (
+    "name" in patient &&
+    "dateOfBirth" in patient &&
+    "ssn" in patient &&
+    "gender" in patient &&
+    "occupation" in patient
+  ) {
+    const nonSensitivePatient: NonSensitivePatient = {
+      name: parseName(patient.name),
+      dateOfBirth: parseDateOfBirth(patient.dateOfBirth),
+      gender: parseGender(patient.gender),
+      occupation: parseOccupation(patient.occupation),
+    };
+    return nonSensitivePatient;
+  }
+  throw new Error("fields are missing");
+};
 /*
   {
       "id": "d2773c6e-f723-11e9-8f0b-362b9e155667",
