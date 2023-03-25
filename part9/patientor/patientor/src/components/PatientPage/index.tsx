@@ -31,6 +31,8 @@ const PatientPage = () => {
       <h1>
         {patient.name} <GenderIcon gender={patient.gender} />
       </h1>
+      ssn: {patient.ssn} <br />
+      occupation: {patient.occupation}
     </div>
   );
 };

@@ -10,7 +10,7 @@ import {
   TableBody,
 } from "@mui/material";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import { PatientFormValues, Patient } from "../../types";
 import AddPatientModal from "../AddPatientModal";
 
@@ -33,7 +33,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
     setModalOpen(false);
     setError(undefined);
   };
-
+  const navigate = useNavigate();
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
       const patient = await patientService.create(values);
@@ -77,7 +77,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
         <TableBody>
           {Object.values(patients).map((patient: Patient) => (
             <TableRow key={patient.id}>
-              <TableCell onClick={() => console.log(patient.id)}>
+              <TableCell onClick={() => navigate(`/patients/${patient.id}`)}>
                 {patient.name}
               </TableCell>
               <TableCell>{patient.gender}</TableCell>
