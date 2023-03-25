@@ -4,6 +4,3 @@
 [submodule "part3-notes-backend"]
 	path = part3-notes-backend
 	url = https://github.com/simonGreenwood/part3-notes-backend/
-[submodule "part2-notes"]
-	path = part2-notes
-	url = https://github.com/fullstack-hy2020/part2-notes

@@ -14,11 +14,17 @@ export const getAllPatientsWithoutSSN = (): Omit<Patient, "ssn">[] => {
   }));
 };
 
-export const addPatient = (patient: NewPatient): Patient[] => {
+export const addPatient = (patient: NewPatient): Patient => {
   const patientWithId = {
     id: uuid(),
     ...patient,
   };
   patients.push(patientWithId);
-  return patients;
+  return patientWithId;
+};
+
+export const getPatientByID = (
+  id: string
+): Omit<Patient, "ssn"> | undefined => {
+  return patients.find((p) => p.id === id);
 };
