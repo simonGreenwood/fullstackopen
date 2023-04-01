@@ -1,5 +1,7 @@
 import { EntryProps } from "../AllEntries";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 const HealthCheckEntry = (props: EntryProps) => {
+  console.log(props.entry);
   return (
     <div
       style={{
@@ -10,7 +12,7 @@ const HealthCheckEntry = (props: EntryProps) => {
         borderRadius: "5px",
       }}
     >
-      {props.entry.date}
+      {props.entry.date} <MedicalServicesIcon />
     </div>
   );
 };

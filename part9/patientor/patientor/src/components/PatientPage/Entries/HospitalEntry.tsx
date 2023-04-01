@@ -1,5 +1,10 @@
 import { EntryProps } from "../AllEntries";
 const HospitalEntry = (props: EntryProps) => {
-  return <div></div>;
+  console.log(props.entry);
+  return (
+    <div>
+      <div>Hospital Entry!</div>
+    </div>
+  );
 };
 export default HospitalEntry;
