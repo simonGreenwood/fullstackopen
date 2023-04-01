@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 
 import GenderIcon from "./GenderIcon";
-import Entries from "./Entries";
+import Entries from "./AllEntries";
 
 const PatientPage = () => {
   const id = useParams().id;
