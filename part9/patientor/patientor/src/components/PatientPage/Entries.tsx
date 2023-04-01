@@ -1,8 +1,17 @@
 import { Typography } from "@mui/material";
-import { Entry } from "../../types";
+import { useEffect, useState } from "react";
+import { getAllDiagnoses } from "../../services/diagnoses";
+import { Entry, Diagnosis } from "../../types";
 
 const Entries = ({ entries }: { entries: Entry[] }) => {
-  console.log(entries);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>();
+  useEffect(() => {
+    getAllDiagnoses().then((allDiagnoses) => setDiagnoses(allDiagnoses));
+  }, []);
+  const getDiagnosisFromCode = (code: string) => {
+    if (!diagnoses) return;
+    return diagnoses.find((diagnosis) => diagnosis.code === code) || null;
+  };
   return (
     <div>
       <Typography
@@ -12,15 +21,18 @@ const Entries = ({ entries }: { entries: Entry[] }) => {
         <strong>entries</strong>
       </Typography>
       {entries.map((entry) => (
-        <div>
+        <div key={entry.id}>
           <Typography>
             {entry.date} <i>{entry.description}</i>
           </Typography>
           <ul>
             {entry.diagnosisCodes &&
+              diagnoses &&
               entry.diagnosisCodes.map((code) => (
                 <li>
-                  <Typography variant="body2">{code}</Typography>
+                  <Typography variant="body2" key={code}>
+                    {code} {getDiagnosisFromCode(code)?.name}
+                  </Typography>
                 </li>
               ))}
           </ul>

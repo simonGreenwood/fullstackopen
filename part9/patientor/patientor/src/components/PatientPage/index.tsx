@@ -37,8 +37,10 @@ const PatientPage = () => {
       >
         <strong>{patient.name}</strong> <GenderIcon gender={patient.gender} />
       </Typography>
-      ssn: {patient.ssn} <br />
-      occupation: {patient.occupation}
+      <Typography variant="body1">
+        ssn: {patient.ssn} <br />
+        occupation: {patient.occupation}
+      </Typography>
       <Entries entries={patient.entries} />
     </div>
   );
