@@ -3,7 +3,10 @@ import patientService from "../../services/patients";
 import { Patient } from "../../types";
 import { useParams } from "react-router-dom";
 
+import { Typography } from "@mui/material";
+
 import GenderIcon from "./GenderIcon";
+import Entries from "./Entries";
 
 const PatientPage = () => {
   const id = useParams().id;
@@ -28,11 +31,15 @@ const PatientPage = () => {
   }
   return (
     <div>
-      <h1>
-        {patient.name} <GenderIcon gender={patient.gender} />
-      </h1>
+      <Typography
+        variant="h5"
+        style={{ marginTop: "1em", marginBottom: "0.5em" }}
+      >
+        <strong>{patient.name}</strong> <GenderIcon gender={patient.gender} />
+      </Typography>
       ssn: {patient.ssn} <br />
       occupation: {patient.occupation}
+      <Entries entries={patient.entries} />
     </div>
   );
 };
