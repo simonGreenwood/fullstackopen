@@ -22,6 +22,12 @@ const OccupationalEntryComponent = (props: OccupationalEntryProps) => {
       <Typography variant="body2">
         <i>{props.entry.description}</i>
       </Typography>
+      {props.entry.sickLeave && (
+        <Typography variant="body2">
+          Sick leave: {props.entry.sickLeave.startDate} until{" "}
+          {props.entry.sickLeave.endDate}
+        </Typography>
+      )}
       <Typography variant="body2">
         diagnosed by {props.entry.specialist}
       </Typography>
