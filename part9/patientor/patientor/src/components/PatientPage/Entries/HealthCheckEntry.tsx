@@ -1,6 +1,11 @@
-import { EntryProps } from "../AllEntries";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-const HealthCheckEntry = (props: EntryProps) => {
+import { Typography } from "@mui/material";
+
+import { HealthCheckEntry } from "../../../types";
+interface HealthCheckEntryProps {
+  entry: HealthCheckEntry;
+}
+const HealthCheckEntryComponent = (props: HealthCheckEntryProps) => {
   console.log(props.entry);
   return (
     <div
@@ -12,8 +17,16 @@ const HealthCheckEntry = (props: EntryProps) => {
         borderRadius: "5px",
       }}
     >
-      {props.entry.date} <MedicalServicesIcon />
+      <Typography variant="body1">
+        {props.entry.date} <MedicalServicesIcon />
+      </Typography>
+      <Typography variant="body2">
+        <i>{props.entry.description}</i>
+      </Typography>
+      <Typography variant="body2">
+        diagnosed by {props.entry.specialist}
+      </Typography>
     </div>
   );
 };
-export default HealthCheckEntry;
+export default HealthCheckEntryComponent;

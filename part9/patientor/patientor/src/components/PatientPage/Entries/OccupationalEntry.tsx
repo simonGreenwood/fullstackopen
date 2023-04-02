@@ -1,12 +1,11 @@
 import WorkIcon from "@mui/icons-material/Work";
 import { Typography } from "@mui/material";
-import { OccupationalHealthcareEntry, Diagnosis } from "../../../types";
-export interface OccupationalEntryProps {
+import { OccupationalHealthcareEntry } from "../../../types";
+interface OccupationalEntryProps {
   entry: OccupationalHealthcareEntry;
-  diagnoses: Diagnosis[];
 }
 
-const OccupationalEntry = (props: OccupationalEntryProps) => {
+const OccupationalEntryComponent = (props: OccupationalEntryProps) => {
   console.log(props.entry);
   return (
     <div
@@ -30,4 +29,4 @@ const OccupationalEntry = (props: OccupationalEntryProps) => {
     </div>
   );
 };
-export default OccupationalEntry;
+export default OccupationalEntryComponent;
