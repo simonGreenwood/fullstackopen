@@ -1,5 +1,5 @@
-import { BaseEntry, Diagnosis, Entry } from "./types";
-import { isString, isDate, isGender } from "./utils";
+import { BaseEntry, Diagnosis } from "./types";
+import { isString, isDate } from "./utils";
 export const parseDiagnosisCodes = (
   object: unknown
 ): Array<Diagnosis["code"]> => {
@@ -26,20 +26,14 @@ export const parseDate = (date: unknown) => {
 
 export const parseSickLeave = (leave: unknown) => {
   if (!leave) {
-    return {}
+    return {};
   }
-  if (typeof leave !== "object" ) {
-    throw new Error("invalid sick leave")
+  if (typeof leave !== "object") {
+    throw new Error("invalid sick leave");
   }
-  if ("startDate" !in leave || !leave.startDate || !isString(leave.startDate) || !isDate(leave.startDate)) {
-    throw new Error("invalid sick leave start date");
-  }
-  if ("endLeave" !in leave || !leave.endDate || !isString(leave.endDate) || !isDate(leave.endDate)) {
-    throw new Error("invalid sick leave end date");
-  }
+
   return leave;
 };
-
 
 export const parseSpecialist = (specialist: unknown) => {
   if (!specialist || !isString(specialist)) {
@@ -89,8 +83,8 @@ export const toEntry = (entry: unknown) => {
       case "OccupationalHealthcare":
         if ("employerName" in entry) {
           if ("sickLeave" in entry) {
-            if parseSickLeave(entry.sickLeave) {
-              console.log("correct!")
+            if (parseSickLeave(entry.sickLeave)) {
+              console.log("correct!");
             }
           }
           return {
@@ -98,10 +92,7 @@ export const toEntry = (entry: unknown) => {
             employerName: entry.employerName,
           };
         }
-      case "HealthCheck":
-        return {
-          ...baseEntry,
-        };
+        throw new Error("error");
       default:
         assertNever(type);
     }

@@ -1,13 +1,6 @@
 import patients from "../../data/patients";
-import { Patient, NewPatient, NonSensitivePatient, BaseEntry } from "../types";
+import { Patient, NewPatient, NonSensitivePatient } from "../types";
 import { v1 as uuid } from "uuid";
-import { parseString } from "../patientHelper";
-import {
-  parseDate,
-  parseDescription,
-  parseDiagnosisCodes,
-  parseSpecialist,
-} from "../entriesHelper";
 export const getAllPatients = (): Patient[] => {
   return patients;
 };

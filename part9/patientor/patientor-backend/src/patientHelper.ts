@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { NewPatient, NonSensitivePatient, Entry } from "./types";
 import { isString, isDate, isGender } from "./utils";
 const parseName = (name: unknown) => {
@@ -88,17 +87,4 @@ export const toNonSensitivePatient = (
     return nonSensitivePatient;
   }
   throw new Error("fields are missing");
-=======
-import { Gender } from "./types";
-export const isString = (text: unknown): text is string => {
-  return typeof text === "string" || text instanceof String;
-};
-export const isDate = (date: string): boolean => {
-  return Boolean(Date.parse(date));
-};
-export const isGender = (newGender: string): newGender is Gender => {
-  return Object.values(Gender)
-    .map((gender) => gender.toString())
-    .includes(newGender);
->>>>>>> aebdeb6bc819a745d3cabe8bca8e4910a076773c
 };
