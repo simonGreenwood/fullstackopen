@@ -6,7 +6,6 @@ interface HospitalEntryProps {
   diagnoses: Diagnosis[];
 }
 const HospitalEntryComponent = (props: HospitalEntryProps) => {
-  console.log(props.entry);
   return (
     <div
       style={{

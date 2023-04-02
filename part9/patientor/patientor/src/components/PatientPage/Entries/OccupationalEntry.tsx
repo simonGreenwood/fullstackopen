@@ -6,7 +6,6 @@ interface OccupationalEntryProps {
 }
 
 const OccupationalEntryComponent = (props: OccupationalEntryProps) => {
-  console.log(props.entry);
   return (
     <div
       style={{
