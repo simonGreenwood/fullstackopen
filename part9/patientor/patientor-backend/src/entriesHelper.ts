@@ -24,19 +24,22 @@ export const parseDate = (date: unknown) => {
   return date;
 };
 
-export const parseSickLeaveStartDate = (date: unknown) => {
-  if (!date || !isString(date) || !isDate(date)) {
+export const parseSickLeave = (leave: unknown) => {
+  if (!leave) {
+    return {}
+  }
+  if (typeof leave !== "object" ) {
+    throw new Error("invalid sick leave")
+  }
+  if ("startDate" !in leave || !leave.startDate || !isString(leave.startDate) || !isDate(leave.startDate)) {
     throw new Error("invalid sick leave start date");
   }
-  return date;
-};
-
-export const parseSickLeaveEndDate = (date: unknown) => {
-  if (!date || !isString(date) || !isDate(date)) {
+  if ("endLeave" !in leave || !leave.endDate || !isString(leave.endDate) || !isDate(leave.endDate)) {
     throw new Error("invalid sick leave end date");
   }
-  return date;
+  return leave;
 };
+
 
 export const parseSpecialist = (specialist: unknown) => {
   if (!specialist || !isString(specialist)) {
@@ -86,13 +89,14 @@ export const toEntry = (entry: unknown) => {
       case "OccupationalHealthcare":
         if ("employerName" in entry) {
           if ("sickLeave" in entry) {
-            if parseSickLeaveEndDate(entry.sickLeave.endDate)
+            if parseSickLeave(entry.sickLeave) {
+              console.log("correct!")
+            }
           }
           return {
             ...baseEntry,
             employerName: entry.employerName,
           };
-
         }
       case "HealthCheck":
         return {

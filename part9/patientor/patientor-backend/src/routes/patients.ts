@@ -2,7 +2,6 @@ import {
   addPatient,
   getPatientByID,
   getAllPatientsWithoutSSN,
-  addNewEntry,
 } from "../services/patientsService";
 import express from "express";
 import { toNewPatient } from "../patientHelper";
@@ -24,6 +23,7 @@ router.get("/:id", (req, res) => {
     res.status(400).send(errorMessage);
   }
 });
+
 router.post("/", (req, res) => {
   try {
     const newPatient = toNewPatient(req.body);
@@ -39,11 +39,7 @@ router.post("/", (req, res) => {
 });
 
 router.post("/:id/entries", (req, res) => {
-  try {
-    const newEntry = addNewEntry(req.body, req.params.id);
-    res.json(newEntry);
-  } catch {
-    console.log("error");
-  }
+  console.log(req, res);
+  return;
 });
 export default router;
