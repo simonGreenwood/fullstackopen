@@ -4,7 +4,8 @@ import {
   getAllPatientsWithoutSSN,
 } from "../services/patientsService";
 import express from "express";
-import { toNewPatient } from "../utils";
+import { toNewPatient } from "../patientHelper";
+import { toNewEntry } from "../entryHelper";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
@@ -23,6 +24,7 @@ router.get("/:id", (req, res) => {
     res.status(400).send(errorMessage);
   }
 });
+
 router.post("/", (req, res) => {
   try {
     const newPatient = toNewPatient(req.body);
@@ -34,6 +36,15 @@ router.post("/", (req, res) => {
       errorMessage += `Error: ${error}`;
     }
     res.status(400).send(errorMessage);
+  }
+});
+
+router.post("/:id/entries", (req, res) => {
+  try {
+    const newEntry = toNewEntry(req.body);
+    res.json(newEntry);
+  } catch {
+    console.log("LMFA0 BUGG3D");
   }
 });
 export default router;
