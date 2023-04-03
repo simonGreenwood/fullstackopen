@@ -23,9 +23,34 @@ export const parseDate = (date: unknown) => {
   }
   return date;
 };
+export const parseDischargeCriteria = (criteria: unknown) => {
+  if (!criteria || !isString(criteria)) {
+    throw new Error("invalid discharge criteria");
+  }
+};
+export const parseDischarge = (discharge: unknown) => {
+  if (!discharge) {
+    return {};
+  }
+  if (typeof discharge !== "object") {
+    throw new Error("invalid discharge");
+  }
+  if (!("date" in discharge)) {
+    throw new Error("doesn't contain discharge date");
+  }
+  if (!("criteria" in discharge)) {
+    throw new Error("doesn't contain discharge criteria");
+  }
+  if (!discharge.date || !isString(discharge.date) || !isDate(discharge.date)) {
+    throw new Error("sick leave start date is not a date");
+  }
+  if (!discharge.criteria || !isString(discharge.criteria)) {
+    throw new Error("discharge criteria is invalid");
+  }
+  return discharge;
+};
 
 export const parseSickLeave = (leave: unknown) => {
-  console.log(leave);
   if (!leave) {
     return {};
   }
@@ -38,10 +63,14 @@ export const parseSickLeave = (leave: unknown) => {
   if (!("endDate" in leave)) {
     throw new Error("sick leave doesn't contain end date");
   }
-  if (!parseDate(leave.startDate)) {
+  if (
+    leave.startDate ||
+    !isString(leave.startDate) ||
+    !isDate(leave.startDate)
+  ) {
     throw new Error("sick leave start date is not a date");
   }
-  if (!parseDate(leave.endDate)) {
+  if (!leave.endDate || !isString(leave.endDate) || !isDate(leave.endDate)) {
     throw new Error("sick leave end date is not a date");
   }
   return leave;
@@ -92,14 +121,12 @@ export const toEntry = (entry: unknown) => {
         };
       case "OccupationalHealthcare":
         if ("employerName" in entry) {
-          if ("sickLeave" in entry) {
-            if (parseSickLeave(entry.sickLeave)) {
-              return {
-                ...baseEntry,
-                employerName: entry.employerName,
-                sickLeave: entry.sickLeave,
-              };
-            }
+          if ("sickLeave" in entry && parseSickLeave(entry.sickLeave)) {
+            return {
+              ...baseEntry,
+              employerName: entry.employerName,
+              sickLeave: entry.sickLeave,
+            };
           }
           return {
             ...baseEntry,
