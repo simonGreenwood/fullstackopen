@@ -1,5 +1,5 @@
 import { BaseEntry, Diagnosis } from "./types";
-import { isString, isDate } from "./utils";
+import { isString, isDate, isHealthCheckRating, isNumber } from "./utils";
 export const parseDiagnosisCodes = (
   object: unknown
 ): Array<Diagnosis["code"]> => {
@@ -22,6 +22,13 @@ export const parseDate = (date: unknown) => {
     throw new Error("invalid date");
   }
   return date;
+};
+
+export const parseHealthCheckRating = (rating: unknown) => {
+  if (!rating || !isNumber(rating) || !isHealthCheckRating(rating)) {
+    throw new Error("invalid health check rating");
+  }
+  return rating;
 };
 export const parseDischarge = (discharge: unknown) => {
   if (!discharge) {
@@ -117,7 +124,7 @@ export const toEntry = (entry: unknown) => {
             discharge: entry.discharge,
           };
         }
-        throw new Error("discharge is not in entry");
+        throw new Error("discharge is missing");
       case "OccupationalHealthcare":
         if ("employerName" in entry) {
           return {
@@ -129,12 +136,18 @@ export const toEntry = (entry: unknown) => {
                 : [],
           };
         }
-        throw new Error("invalid fields for occupational healthcare");
+        throw new Error("empyoter name missing");
       case "HealthCheck":
-        return {
-          ...baseEntry,
-        };
-
+        if (
+          "healthCheckRating" in entry &&
+          parseHealthCheckRating(entry.healthCheckRating)
+        ) {
+          return {
+            ...baseEntry,
+            healthCheckRating: entry.healthCheckRating,
+          };
+        }
+        throw new Error("health check rating missing");
       default:
         assertNever(parsedType);
         return;
