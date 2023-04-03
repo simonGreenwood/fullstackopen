@@ -40,7 +40,7 @@ export const addPatient = (patient: NewPatient): Patient => {
 export const addNewEntry = (
   entry: EntryWithoutId,
   patientId: string
-): Patient[] => {
+): Entry[] => {
   console.log(entry, patientId);
   const entryWithId: Entry = {
     id: uuid(),
@@ -49,5 +49,7 @@ export const addNewEntry = (
   patients.map((patient) =>
     patient.id === patientId ? patient.entries.push(entryWithId) : patient
   );
-  return patients;
+  const patient = patients.find((patient) => patient.id === patientId);
+  if (!patient) throw new Error("invalid patient id");
+  return patient.entries;
 };
