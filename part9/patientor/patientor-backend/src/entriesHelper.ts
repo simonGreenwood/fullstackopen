@@ -1,4 +1,10 @@
-import { BaseEntry, Diagnosis, EntryWithoutId } from "./types";
+import {
+  BaseEntry,
+  Diagnosis,
+  Discharge,
+  EntryWithoutId,
+  SickLeave,
+} from "./types";
 import { isString, isDate, isNumber, isHealthCheckRating } from "./utils";
 export const parseDiagnosisCodes = (
   object: unknown
@@ -31,11 +37,8 @@ export const parseHealthCheckRating = (rating: unknown) => {
   }
   return rating;
 };
-export const parseDischarge = (discharge: unknown) => {
-  if (!discharge) {
-    return {};
-  }
-  if (typeof discharge !== "object") {
+export const parseDischarge = (discharge: unknown): Discharge => {
+  if (!discharge || typeof discharge !== "object") {
     throw new Error("invalid discharge");
   }
   if (!("date" in discharge)) {
@@ -50,14 +53,11 @@ export const parseDischarge = (discharge: unknown) => {
   if (!discharge.criteria || !isString(discharge.criteria)) {
     throw new Error("discharge criteria is invalid");
   }
-  return discharge;
+  return discharge as Discharge;
 };
 
 export const parseSickLeave = (leave: unknown) => {
-  if (!leave) {
-    return {};
-  }
-  if (typeof leave !== "object") {
+  if (!leave || typeof leave !== "object") {
     throw new Error("invalid sick leave");
   }
   if (!("startDate" in leave)) {
@@ -67,7 +67,7 @@ export const parseSickLeave = (leave: unknown) => {
     throw new Error("sick leave doesn't contain end date");
   }
   if (
-    leave.startDate ||
+    !leave.startDate ||
     !isString(leave.startDate) ||
     !isDate(leave.startDate)
   ) {
@@ -76,9 +76,15 @@ export const parseSickLeave = (leave: unknown) => {
   if (!leave.endDate || !isString(leave.endDate) || !isDate(leave.endDate)) {
     throw new Error("sick leave end date is not a date");
   }
-  return leave;
+  return leave as SickLeave;
 };
 
+export const parseEmployerName = (employer: unknown) => {
+  if (!employer || !isString(employer)) {
+    throw new Error("invalid employer");
+  }
+  return employer;
+};
 export const parseSpecialist = (specialist: unknown) => {
   if (!specialist || !isString(specialist)) {
     throw new Error("invalid specialist");
@@ -119,39 +125,39 @@ export const toEntry = (entry: unknown): EntryWithoutId => {
     const parsedType = parseType(entry.type);
     switch (parsedType) {
       case "Hospital":
-        if ("discharge" in entry && parseDischarge(entry.discharge)) {
+        if ("discharge" in entry) {
           return {
             ...baseEntry,
-            discharge: entry.discharge,
+            type: parsedType,
+            discharge: parseDischarge(entry.discharge),
           };
         }
         throw new Error("discharge is missing");
+
       case "OccupationalHealthcare":
         if ("employerName" in entry) {
           return {
             ...baseEntry,
-            employerName: entry.employerName,
+            type: parsedType,
+            employerName: parseEmployerName(entry.employerName),
             sickLeave:
-              "sickLeave" in entry && parseSickLeave(entry.sickLeave)
-                ? entry.sickLeave
-                : [],
+              "sickLeave" in entry
+                ? parseSickLeave(entry.sickLeave)
+                : undefined,
           };
         }
         throw new Error("employer name missing");
       case "HealthCheck":
-        if (
-          "healthCheckRating" in entry &&
-          !isNaN(parseHealthCheckRating(entry.healthCheckRating))
-        ) {
+        if ("healthCheckRating" in entry) {
           return {
             ...baseEntry,
-            healthCheckRating: entry.healthCheckRating,
+            type: parsedType,
+            healthCheckRating: parseHealthCheckRating(entry.healthCheckRating),
           };
         }
         throw new Error("health check rating missing");
       default:
         assertNever(parsedType);
-        return;
     }
   }
   throw new Error("invalid data");
