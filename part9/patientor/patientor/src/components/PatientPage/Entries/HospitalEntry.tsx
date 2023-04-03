@@ -24,9 +24,12 @@ const HospitalEntryComponent = (props: HospitalEntryProps) => {
         Discharge date: {props.entry.discharge.date},{" "}
         {props.entry.discharge.criteria}
       </Typography>
-      <Typography variant="body1" style={{ paddingTop: "5px" }}>
-        Diagnoses
-      </Typography>
+      {props.entry.diagnosisCodes && (
+        <Typography variant="body1" style={{ paddingTop: "5px" }}>
+          Diagnoses
+        </Typography>
+      )}
+
       <ul>
         {props.entry.diagnosisCodes &&
           props.entry.diagnosisCodes.map((code) => {

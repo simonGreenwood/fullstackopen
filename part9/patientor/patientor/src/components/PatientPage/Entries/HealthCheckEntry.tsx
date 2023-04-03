@@ -2,9 +2,10 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Typography } from "@mui/material";
 
-import { HealthCheckEntry } from "../../../types";
+import { HealthCheckEntry, Diagnosis } from "../../../types";
 interface HealthCheckEntryProps {
   entry: HealthCheckEntry;
+  diagnoses: Diagnosis[];
 }
 const HealthCheckEntryComponent = (props: HealthCheckEntryProps) => {
   const generateHeartStyle = (rating: Number) => {
@@ -35,6 +36,25 @@ const HealthCheckEntryComponent = (props: HealthCheckEntryProps) => {
           color: generateHeartStyle(props.entry.healthCheckRating),
         }}
       />
+      {props.entry.diagnosisCodes && (
+        <Typography variant="body1" style={{ paddingTop: "5px" }}>
+          Diagnoses
+        </Typography>
+      )}
+      <ul>
+        {props.entry.diagnosisCodes &&
+          props.entry.diagnosisCodes.map((code) => {
+            const theDiagnosis = props.diagnoses.find(
+              (diagnosis) => diagnosis.code === code
+            );
+            if (!theDiagnosis) return <></>;
+            return (
+              <Typography variant="body2">
+                {theDiagnosis.code} {theDiagnosis.name}
+              </Typography>
+            );
+          })}
+      </ul>
       <Typography variant="body2">
         diagnosed by {props.entry.specialist}
       </Typography>

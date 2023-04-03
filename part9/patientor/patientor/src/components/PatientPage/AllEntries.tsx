@@ -14,9 +14,13 @@ const EntryDetails = (props: { entry: Entry; diagnoses: Diagnosis[] }) => {
     case "Hospital":
       return <HospitalEntry entry={props.entry} diagnoses={props.diagnoses} />;
     case "OccupationalHealthcare":
-      return <OccupationalEntry entry={props.entry} />;
+      return (
+        <OccupationalEntry entry={props.entry} diagnoses={props.diagnoses} />
+      );
     case "HealthCheck":
-      return <HealthCheckEntry entry={props.entry} />;
+      return (
+        <HealthCheckEntry entry={props.entry} diagnoses={props.diagnoses} />
+      );
     default:
       return assertNever(props.entry);
   }

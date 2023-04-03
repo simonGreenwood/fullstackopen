@@ -1,8 +1,9 @@
 import WorkIcon from "@mui/icons-material/Work";
 import { Typography } from "@mui/material";
-import { OccupationalHealthcareEntry } from "../../../types";
+import { OccupationalHealthcareEntry, Diagnosis } from "../../../types";
 interface OccupationalEntryProps {
   entry: OccupationalHealthcareEntry;
+  diagnoses: Diagnosis[];
 }
 
 const OccupationalEntryComponent = (props: OccupationalEntryProps) => {
@@ -28,6 +29,25 @@ const OccupationalEntryComponent = (props: OccupationalEntryProps) => {
           {props.entry.sickLeave.endDate}
         </Typography>
       )}
+      {props.entry.diagnosisCodes && (
+        <Typography variant="body1" style={{ paddingTop: "5px" }}>
+          Diagnoses
+        </Typography>
+      )}
+      <ul>
+        {props.entry.diagnosisCodes &&
+          props.entry.diagnosisCodes.map((code) => {
+            const theDiagnosis = props.diagnoses.find(
+              (diagnosis) => diagnosis.code === code
+            );
+            if (!theDiagnosis) return <></>;
+            return (
+              <Typography variant="body2">
+                {theDiagnosis.code} {theDiagnosis.name}
+              </Typography>
+            );
+          })}
+      </ul>
       <Typography variant="body2">
         diagnosed by {props.entry.specialist}
       </Typography>
