@@ -1,4 +1,4 @@
-import { BaseEntry, Diagnosis } from "./types";
+import { BaseEntry, Diagnosis, EntryWithoutId } from "./types";
 import { isString, isDate, isNumber, isHealthCheckRating } from "./utils";
 export const parseDiagnosisCodes = (
   object: unknown
@@ -99,7 +99,7 @@ const assertNever = (value: never): never => {
   throw new Error(`${value} is an invalid type`);
 };
 
-export const toEntry = (entry: unknown) => {
+export const toEntry = (entry: unknown): EntryWithoutId => {
   if (!entry || typeof entry !== "object") {
     throw new Error("Incorrect or missing data");
   }

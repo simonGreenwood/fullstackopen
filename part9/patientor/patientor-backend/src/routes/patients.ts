@@ -2,6 +2,7 @@ import {
   addPatient,
   getPatientByID,
   getAllPatientsWithoutSSN,
+  addNewEntry,
 } from "../services/patientsService";
 import express from "express";
 import { toNewPatient } from "../patientHelper";
@@ -28,8 +29,8 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   try {
     const newPatient = toNewPatient(req.body);
-    const addedEntry = addPatient(newPatient);
-    res.json(addedEntry);
+    const addedPatient = addPatient(newPatient);
+    res.json(addedPatient);
   } catch (error: unknown) {
     let errorMessage = "something went wrong, ";
     if (error instanceof Error) {
@@ -40,6 +41,16 @@ router.post("/", (req, res) => {
 });
 
 router.post("/:id/entries", (req, res) => {
-  res.json(toEntry(req.body));
+  try {
+    const newEntry = toEntry(req.body);
+    const addedEntry = addNewEntry(newEntry, req.params.id);
+    res.json(addedEntry);
+  } catch (error: unknown) {
+    let errorMessage = "something went wrong, ";
+    if (error instanceof Error) {
+      errorMessage += `Error: ${error}`;
+    }
+    res.status(400).send(errorMessage);
+  }
 });
 export default router;
