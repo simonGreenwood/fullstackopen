@@ -5,6 +5,7 @@ import {
 } from "../services/patientsService";
 import express from "express";
 import { toNewPatient } from "../patientHelper";
+import { toEntry } from "../entriesHelper";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
@@ -39,7 +40,6 @@ router.post("/", (req, res) => {
 });
 
 router.post("/:id/entries", (req, res) => {
-  console.log(req, res);
-  return;
+  res.json(toEntry(req.body));
 });
 export default router;

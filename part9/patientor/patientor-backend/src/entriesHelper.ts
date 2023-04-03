@@ -25,13 +25,25 @@ export const parseDate = (date: unknown) => {
 };
 
 export const parseSickLeave = (leave: unknown) => {
+  console.log(leave);
   if (!leave) {
     return {};
   }
   if (typeof leave !== "object") {
     throw new Error("invalid sick leave");
   }
-
+  if (!("startDate" in leave)) {
+    throw new Error("sick leave doesn't contain start date");
+  }
+  if (!("endDate" in leave)) {
+    throw new Error("sick leave doesn't contain end date");
+  }
+  if (!parseDate(leave.startDate)) {
+    throw new Error("sick leave start date is not a date");
+  }
+  if (!parseDate(leave.endDate)) {
+    throw new Error("sick leave end date is not a date");
+  }
   return leave;
 };
 
@@ -70,12 +82,10 @@ export const toEntry = (entry: unknown) => {
       date: parseDate(entry.date),
       specialist: parseSpecialist(entry.specialist),
       diagnosisCodes:
-        "diagnosisCodes" in entry
-          ? parseDiagnosisCodes(entry.diagnosisCodes)
-          : [],
+        "diagnosisCodes" in entry ? parseDiagnosisCodes(entry) : [],
     };
-    const type = parseType(entry.type);
-    switch (type) {
+    const parsedType = parseType(entry.type);
+    switch (parsedType) {
       case "Hospital":
         return {
           ...baseEntry,
@@ -84,7 +94,11 @@ export const toEntry = (entry: unknown) => {
         if ("employerName" in entry) {
           if ("sickLeave" in entry) {
             if (parseSickLeave(entry.sickLeave)) {
-              console.log("correct!");
+              return {
+                ...baseEntry,
+                employerName: entry.employerName,
+                sickLeave: entry.sickLeave,
+              };
             }
           }
           return {
@@ -92,10 +106,16 @@ export const toEntry = (entry: unknown) => {
             employerName: entry.employerName,
           };
         }
-        throw new Error("error");
+        throw new Error("invalid fields for occupational healthcare");
+      case "HealthCheck":
+        return {
+          ...baseEntry,
+        };
+
       default:
-        assertNever(type);
+        assertNever(parsedType);
+        return;
     }
-    console.log(baseEntry);
   }
+  throw new Error("invalid data");
 };
