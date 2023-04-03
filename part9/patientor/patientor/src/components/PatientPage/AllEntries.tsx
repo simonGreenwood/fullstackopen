@@ -1,10 +1,12 @@
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAllDiagnoses } from "../../services/diagnoses";
 import { Entry, Diagnosis } from "../../types";
+
 import HospitalEntry from "./Entries/HospitalEntry";
 import OccupationalEntry from "./Entries/OccupationalEntry";
 import HealthCheckEntry from "./Entries/HealthCheckEntry";
+import AddEntryModal from "./AddEntryModal";
 
 const EntryDetails = (props: { entry: Entry; diagnoses: Diagnosis[] }) => {
   const assertNever = (value: never): never => {
@@ -28,6 +30,13 @@ const EntryDetails = (props: { entry: Entry; diagnoses: Diagnosis[] }) => {
 
 const Entries = ({ entries }: { entries: Entry[] }) => {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>();
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
+  const openModal = (): void => setModalOpen(true);
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
   useEffect(() => {
     getAllDiagnoses().then((allDiagnoses) => setDiagnoses(allDiagnoses));
   }, []);
@@ -43,6 +52,15 @@ const Entries = ({ entries }: { entries: Entry[] }) => {
         entries.map((entry) => (
           <EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
         ))}
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={() => console.log("submitted")}
+        error={error}
+        onClose={closeModal}
+      />
+      <Button variant="contained" onClick={() => openModal()}>
+        Add new entry
+      </Button>
     </div>
   );
 };
