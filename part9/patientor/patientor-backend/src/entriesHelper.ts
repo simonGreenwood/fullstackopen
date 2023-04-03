@@ -23,11 +23,6 @@ export const parseDate = (date: unknown) => {
   }
   return date;
 };
-export const parseDischargeCriteria = (criteria: unknown) => {
-  if (!criteria || !isString(criteria)) {
-    throw new Error("invalid discharge criteria");
-  }
-};
 export const parseDischarge = (discharge: unknown) => {
   if (!discharge) {
     return {};
@@ -116,21 +111,22 @@ export const toEntry = (entry: unknown) => {
     const parsedType = parseType(entry.type);
     switch (parsedType) {
       case "Hospital":
-        return {
-          ...baseEntry,
-        };
+        if ("discharge" in entry && parseDischarge(entry.discharge)) {
+          return {
+            ...baseEntry,
+            discharge: entry.discharge,
+          };
+        }
+        throw new Error("discharge is not in entry");
       case "OccupationalHealthcare":
         if ("employerName" in entry) {
-          if ("sickLeave" in entry && parseSickLeave(entry.sickLeave)) {
-            return {
-              ...baseEntry,
-              employerName: entry.employerName,
-              sickLeave: entry.sickLeave,
-            };
-          }
           return {
             ...baseEntry,
             employerName: entry.employerName,
+            sickLeave:
+              "sickLeave" in entry && parseSickLeave(entry.sickLeave)
+                ? entry.sickLeave
+                : [],
           };
         }
         throw new Error("invalid fields for occupational healthcare");
