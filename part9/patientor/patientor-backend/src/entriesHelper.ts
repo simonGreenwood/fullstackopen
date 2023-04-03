@@ -1,5 +1,5 @@
 import { BaseEntry, Diagnosis } from "./types";
-import { isString, isDate, isHealthCheckRating, isNumber } from "./utils";
+import { isString, isDate, isNumber, isHealthCheckRating } from "./utils";
 export const parseDiagnosisCodes = (
   object: unknown
 ): Array<Diagnosis["code"]> => {
@@ -25,7 +25,8 @@ export const parseDate = (date: unknown) => {
 };
 
 export const parseHealthCheckRating = (rating: unknown) => {
-  if (!rating || !isNumber(rating) || !isHealthCheckRating(rating)) {
+  console.log(typeof rating, rating, isNumber(rating));
+  if (!isNumber(rating) || isNaN(rating) || !isHealthCheckRating(rating)) {
     throw new Error("invalid health check rating");
   }
   return rating;
@@ -136,11 +137,11 @@ export const toEntry = (entry: unknown) => {
                 : [],
           };
         }
-        throw new Error("empyoter name missing");
+        throw new Error("employer name missing");
       case "HealthCheck":
         if (
           "healthCheckRating" in entry &&
-          parseHealthCheckRating(entry.healthCheckRating)
+          !isNaN(parseHealthCheckRating(entry.healthCheckRating))
         ) {
           return {
             ...baseEntry,
