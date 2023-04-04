@@ -10,8 +10,16 @@ import {
   MenuItem,
 } from "@mui/material";
 
-import { EntryFormValues, HealthCheckRating, Entry } from "../../../types";
+import {
+  EntryFormValues,
+  HealthCheckRating,
+  Entry,
+  BaseEntry,
+  SickLeave,
+} from "../../../types";
 import HealthCheck from "./HealthCheck";
+import OccupationalHealthcare from "./OccupationalHealthcare";
+import Hospital from "./Hospital";
 
 interface Props {
   onCancel: () => void;
@@ -25,6 +33,15 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [specialist, setSpecialist] = useState("");
   const [diagnosisCodes, setDiagnosisCodes] = useState("");
   const [entryType, setEntryType] = useState<Entry["type"]>("HealthCheck");
+  const [employerName, setEmployerName] = useState("");
+  const [sickLeave, setSickLeave] = useState<SickLeave>({
+    startDate: "",
+    endDate: "",
+  });
+  const [discharge, setDischarge] = useState<Discharge>({
+    date: "",
+    criteria: "",
+  });
   const [healthCheckRating, setHealthCheckRating] = useState(
     HealthCheckRating.Healthy
   );
@@ -57,19 +74,34 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   };
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault();
-    onSubmit({
+    const baseEntry: Omit<BaseEntry, "id"> = {
       description,
       date,
       specialist,
       diagnosisCodes: diagnosisCodes?.split(" "),
-      type: "HealthCheck",
-      healthCheckRating,
-    });
+    };
+    if (entryType === "HealthCheck") {
+      onSubmit({
+        ...baseEntry,
+        type: "HealthCheck",
+        healthCheckRating,
+      });
+    }
+    if (entryType === "OccupationalHealthcare") {
+      onSubmit({
+        ...baseEntry,
+        type: "OccupationalHealthcare",
+        employerName,
+        sickLeave,
+      });
+    }
     setDescription("");
     setDate("");
     setSpecialist("");
     setDiagnosisCodes("");
     setHealthCheckRating(HealthCheckRating.Healthy);
+    setEmployerName("");
+    setSickLeave({ startDate: "", endDate: "" });
     onCancel();
   };
 
@@ -82,7 +114,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           fullWidth
           value={entryType.toString()}
           onChange={onTypeChange}
-          style={{ marginBottom: 20 }}
         >
           {typeOptions.map((option) => {
             return (
@@ -92,6 +123,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             );
           })}
         </Select>
+        <InputLabel style={{ marginTop: 20 }}>General info</InputLabel>
         <TextField
           label="Description"
           fullWidth
@@ -123,6 +155,15 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             healthCheckRating={healthCheckRating}
           />
         )}
+        {entryType === "OccupationalHealthcare" && (
+          <OccupationalHealthcare
+            sickLeave={sickLeave}
+            setSickLeave={setSickLeave}
+            employer={employerName}
+            setEmployer={setEmployerName}
+          />
+        )}
+        {entryType === "Hospital" && <Hospital />}
         <Grid>
           <Grid item>
             <Button
