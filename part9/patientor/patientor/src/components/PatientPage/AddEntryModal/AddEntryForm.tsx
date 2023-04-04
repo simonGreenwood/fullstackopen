@@ -10,7 +10,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 
-import { EntryFormValues, HealthCheckRating, Gender } from "../../../types";
+import { EntryFormValues, HealthCheckRating } from "../../../types";
 
 interface Props {
   onCancel: () => void;
@@ -22,12 +22,17 @@ interface HealthCheckRatingOption {
   label: string;
 }
 
-const healthCheckRatingOptions = Object.entries(HealthCheckRating)
-  .filter((x) => isNaN(Number(x[1])))
-  .map((rating) => ({
-    value: Number(rating[0]),
-    label: rating[1],
-  }));
+const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.keys(
+  HealthCheckRating
+)
+  .filter((x) => !isNaN(Number(x)))
+  .map((rating) => {
+    return {
+      value: Number(rating),
+      label: HealthCheckRating[Number(rating)],
+    };
+  });
+
 console.log(healthCheckRatingOptions);
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [description, setDescription] = useState("");
@@ -59,8 +64,14 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
       specialist,
       diagnosisCodes: diagnosisCodes?.split(" "),
       type: "HealthCheck",
-      healthCheckRating: 0,
+      healthCheckRating,
     });
+    setDescription("");
+    setDate("");
+    setSpecialist("");
+    setDiagnosisCodes("");
+    setHealthCheckRating(HealthCheckRating.Healthy);
+    onCancel();
   };
 
   return (

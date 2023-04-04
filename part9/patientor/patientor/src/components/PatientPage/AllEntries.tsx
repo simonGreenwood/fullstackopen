@@ -1,9 +1,6 @@
 import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import axios from "axios";
-
 import { getAllDiagnoses } from "../../services/diagnoses";
-import patientService from "../../services/patients";
 import { Entry, Diagnosis, EntryFormValues } from "../../types";
 
 import HospitalEntry from "./Entries/HospitalEntry";

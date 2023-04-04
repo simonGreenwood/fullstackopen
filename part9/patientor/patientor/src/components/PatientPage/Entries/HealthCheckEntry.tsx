@@ -49,7 +49,7 @@ const HealthCheckEntryComponent = (props: HealthCheckEntryProps) => {
             );
             if (!theDiagnosis) return <></>;
             return (
-              <Typography variant="body2">
+              <Typography variant="body2" key={theDiagnosis.code}>
                 {theDiagnosis.code} {theDiagnosis.name}
               </Typography>
             );

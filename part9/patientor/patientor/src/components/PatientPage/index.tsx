@@ -30,9 +30,8 @@ const PatientPage = () => {
         setErrorMessage("No patient");
         return;
       }
-      console.log(values.type);
-      const entry = await patientService.addEntry(values, patient.id);
-      console.log(entry);
+      const entries = await patientService.addEntry(values, patient.id);
+      setPatient({ ...patient, entries });
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         if (e?.response?.data && typeof e?.response?.data === "string") {
