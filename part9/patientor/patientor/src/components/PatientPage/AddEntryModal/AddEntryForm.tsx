@@ -22,14 +22,13 @@ interface HealthCheckRatingOption {
   label: string;
 }
 
-const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(
-  HealthCheckRating
-)
-  .filter((x) => !isNaN(Number(x)))
-  .map((v) => console.log(v));
-console.log(HealthCheckRating, Gender);
+const healthCheckRatingOptions = Object.entries(HealthCheckRating)
+  .filter((x) => isNaN(Number(x[1])))
+  .map((rating) => ({
+    value: Number(rating[0]),
+    label: rating[1],
+  }));
 console.log(healthCheckRatingOptions);
-
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -41,12 +40,11 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
   const onHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
     event.preventDefault();
-    if (typeof event.target.value === "string") {
+    if (typeof event.target.value === "number") {
       const value = event.target.value;
       const healthCheckRating = Object.keys(HealthCheckRating).find(
-        (g) => g.toString() === value
+        (g) => Number(g) === value
       );
-      console.log(healthCheckRating);
       if (healthCheckRating) {
         setHealthCheckRating(Number(healthCheckRating));
       }
