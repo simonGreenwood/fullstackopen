@@ -16,6 +16,7 @@ app.use("/api/diagnoses", diagnosesRouter);
 app.use("/api/patients", patientsRouter);
 
 const PORT = 3001;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
