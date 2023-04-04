@@ -16,6 +16,7 @@ import {
   Entry,
   BaseEntry,
   SickLeave,
+  Discharge,
 } from "../../../types";
 import HealthCheck from "./HealthCheck";
 import OccupationalHealthcare from "./OccupationalHealthcare";
@@ -95,6 +96,13 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         sickLeave,
       });
     }
+    if (entryType === "Hospital") {
+      onSubmit({
+        ...baseEntry,
+        type: "Hospital",
+        discharge,
+      });
+    }
     setDescription("");
     setDate("");
     setSpecialist("");
@@ -102,6 +110,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     setHealthCheckRating(HealthCheckRating.Healthy);
     setEmployerName("");
     setSickLeave({ startDate: "", endDate: "" });
+    setDischarge({ date: "", criteria: "" });
     onCancel();
   };
 
@@ -163,7 +172,11 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             setEmployer={setEmployerName}
           />
         )}
-        {entryType === "Hospital" && <Hospital />}
+        {entryType === "Hospital" && (
+          <>
+            <Hospital discharge={discharge} setDischarge={setDischarge} />
+          </>
+        )}
         <Grid>
           <Grid item>
             <Button
