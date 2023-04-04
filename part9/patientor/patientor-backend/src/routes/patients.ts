@@ -34,7 +34,7 @@ router.post("/", (req, res) => {
   } catch (error: unknown) {
     let errorMessage = "something went wrong, ";
     if (error instanceof Error) {
-      errorMessage += `Error: ${error}`;
+      errorMessage += `${error}`;
     }
     res.status(400).send(errorMessage);
   }
@@ -48,7 +48,7 @@ router.post("/:id/entries", (req, res) => {
   } catch (error: unknown) {
     let errorMessage = "something went wrong, ";
     if (error instanceof Error) {
-      errorMessage += `Error: ${error}`;
+      errorMessage += `${error}`;
     }
     res.status(400).send(errorMessage);
   }
