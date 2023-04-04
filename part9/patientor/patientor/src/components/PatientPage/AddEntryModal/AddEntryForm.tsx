@@ -33,7 +33,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string>();
+  const [diagnosisCodes, setDiagnosisCodes] = useState("");
   const [healthCheckRating, setHealthCheckRating] = useState<HealthCheckRating>(
     HealthCheckRating.Healthy
   );
@@ -51,7 +51,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     }
   };
 
-  const addPatient = (event: SyntheticEvent) => {
+  const addEntry = (event: SyntheticEvent) => {
     event.preventDefault();
     onSubmit({
       description,
@@ -65,7 +65,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
   return (
     <div>
-      <form onSubmit={addPatient}>
+      <form onSubmit={addEntry}>
         <TextField
           label="Description"
           fullWidth
@@ -100,7 +100,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           onChange={onHealthCheckRatingChange}
         >
           {healthCheckRatingOptions.map((option) => {
-            console.log(option);
             return (
               <MenuItem key={option.label} value={option.value}>
                 {option.label}

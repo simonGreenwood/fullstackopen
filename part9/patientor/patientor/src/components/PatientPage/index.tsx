@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import patientService from "../../services/patients";
-import { Patient } from "../../types";
+import { Patient, EntryFormValues } from "../../types";
 import { useParams } from "react-router-dom";
-
+import axios from "axios";
 import { Typography } from "@mui/material";
 
 import GenderIcon from "./GenderIcon";
@@ -12,6 +12,7 @@ const PatientPage = () => {
   const id = useParams().id;
   const [patient, setPatient] = useState<Patient>();
   const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
     if (!id) return;
     console.log(id);
@@ -22,6 +23,34 @@ const PatientPage = () => {
       })
       .catch((error) => setErrorMessage(error.response.data));
   }, [id]);
+
+  const handleSubmit = async (values: EntryFormValues) => {
+    try {
+      if (!patient) {
+        setErrorMessage("No patient");
+        return;
+      }
+      console.log(values.type);
+      const entry = await patientService.addEntry(values, patient.id);
+      console.log(entry);
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace(
+            "Something went wrong. Error: ",
+            ""
+          );
+          console.error(message);
+          setErrorMessage(message);
+        } else {
+          setErrorMessage("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setErrorMessage("Unknown error");
+      }
+    }
+  };
 
   if (errorMessage) {
     return <h1>{errorMessage}</h1>;
@@ -41,7 +70,7 @@ const PatientPage = () => {
         ssn: {patient.ssn} <br />
         occupation: {patient.occupation}
       </Typography>
-      <Entries entries={patient.entries} />
+      <Entries entries={patient.entries} handleSubmit={handleSubmit} />
     </div>
   );
 };

@@ -1,7 +1,10 @@
 import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import axios from "axios";
+
 import { getAllDiagnoses } from "../../services/diagnoses";
-import { Entry, Diagnosis } from "../../types";
+import patientService from "../../services/patients";
+import { Entry, Diagnosis, EntryFormValues } from "../../types";
 
 import HospitalEntry from "./Entries/HospitalEntry";
 import OccupationalEntry from "./Entries/OccupationalEntry";
@@ -28,7 +31,13 @@ const EntryDetails = (props: { entry: Entry; diagnoses: Diagnosis[] }) => {
   }
 };
 
-const Entries = ({ entries }: { entries: Entry[] }) => {
+const Entries = ({
+  entries,
+  handleSubmit,
+}: {
+  entries: Entry[];
+  handleSubmit: (values: EntryFormValues) => void;
+}) => {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>();
@@ -40,6 +49,7 @@ const Entries = ({ entries }: { entries: Entry[] }) => {
   useEffect(() => {
     getAllDiagnoses().then((allDiagnoses) => setDiagnoses(allDiagnoses));
   }, []);
+
   return (
     <div>
       <Typography
@@ -54,7 +64,7 @@ const Entries = ({ entries }: { entries: Entry[] }) => {
         ))}
       <AddEntryModal
         modalOpen={modalOpen}
-        onSubmit={() => console.log("submitted")}
+        onSubmit={handleSubmit}
         error={error}
         onClose={closeModal}
       />
