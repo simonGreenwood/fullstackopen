@@ -160,5 +160,5 @@ export const toEntry = (entry: unknown): EntryWithoutId => {
         assertNever(parsedType);
     }
   }
-  throw new Error("invalid data");
+  throw new Error("description, date, type or specialist is missing");
 };
