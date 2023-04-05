@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent } from "react";
+import { useState, useEffect, SyntheticEvent } from "react";
 
 import {
   TextField,
@@ -8,6 +8,9 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  OutlinedInput,
+  Box,
+  Chip,
 } from "@mui/material";
 
 import {
@@ -17,10 +20,12 @@ import {
   BaseEntry,
   SickLeave,
   Discharge,
+  Diagnosis,
 } from "../../../types";
 import HealthCheck from "./HealthCheck";
 import OccupationalHealthcare from "./OccupationalHealthcare";
 import Hospital from "./Hospital";
+import { getAllDiagnoses } from "../../../services/diagnoses";
 
 interface Props {
   onCancel: () => void;
@@ -29,10 +34,11 @@ interface Props {
 
 const typeOptions = ["HealthCheck", "OccupationalHealthcare", "Hospital"];
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
+  const [selectedDiagnoses, setSelectedDiagnoses] = useState<Diagnosis[]>([]);
+
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState("");
   const [entryType, setEntryType] = useState<Entry["type"]>("HealthCheck");
   const [employerName, setEmployerName] = useState("");
   const [sickLeave, setSickLeave] = useState<SickLeave>({
@@ -46,7 +52,10 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [healthCheckRating, setHealthCheckRating] = useState(
     HealthCheckRating.Healthy
   );
-
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>();
+  useEffect(() => {
+    getAllDiagnoses().then((allDiagnoses) => setDiagnoses(allDiagnoses));
+  }, []);
   const onHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
     event.preventDefault();
     if (typeof event.target.value === "number") {
@@ -79,7 +88,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
       description,
       date,
       specialist,
-      diagnosisCodes: diagnosisCodes?.split(" "),
+      diagnosisCodes: diagnoses?.map((d) => d.code),
     };
     if (entryType === "HealthCheck") {
       onSubmit({
@@ -106,7 +115,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     setDescription("");
     setDate("");
     setSpecialist("");
-    setDiagnosisCodes("");
+    setDiagnoses([]);
     setHealthCheckRating(HealthCheckRating.Healthy);
     setEmployerName("");
     setSickLeave({ startDate: "", endDate: "" });
@@ -114,6 +123,19 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     onCancel();
   };
 
+  const handleDiagnosesChange = (
+    event: SelectChangeEvent<typeof selectedDiagnoses>
+  ) => {
+    if (!diagnoses) return;
+    console.log(diagnoses, event.target.value[0]);
+    const diagnosisToAdd = diagnoses.find(
+      (diagnosis) => diagnosis.code === event.target.value[0]
+    );
+    console.log(diagnosisToAdd);
+    if (!diagnosisToAdd) return;
+    setSelectedDiagnoses(selectedDiagnoses.concat(diagnosisToAdd));
+    console.log(selectedDiagnoses, diagnoses);
+  };
   return (
     <div>
       <form onSubmit={addEntry}>
@@ -152,12 +174,47 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           value={specialist}
           onChange={({ target }) => setSpecialist(target.value)}
         />
-        <TextField
-          label="Diagnosis Codes"
+        {/*
+        <Select
           fullWidth
-          value={diagnosisCodes}
-          onChange={({ target }) => setDiagnosisCodes(target.value)}
-        />
+          multiple
+          value={selectedDiagnoses}
+          renderValue={(selected) => (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((value) => {
+                console.log(value);
+                return <Chip key={value.code} label={value.code} />;
+              })}
+            </Box>
+          )}
+          onChange={handleDiagnosesChange}
+          input={
+            <OutlinedInput id="select-multiple-chip" label="Diagnosis codes" />
+          }
+        >
+          {diagnoses &&
+            diagnoses.map((d) => {
+              return (
+                <MenuItem key={d.code} value={d.code}>
+                  {d.code} - {d.name}
+                </MenuItem>
+              );
+            })}
+          </Select> */}
+        <Select
+          fullWidth
+          multiple
+          value={selectedDiagnoses}
+          onChange={handleDiagnosesChange}
+          input={<OutlinedInput label="Name" />}
+        >
+          {diagnoses &&
+            diagnoses.map((diagnosis) => (
+              <MenuItem key={diagnosis.code} value={diagnosis.name}>
+                {diagnosis.code} {diagnosis.name}
+              </MenuItem>
+            ))}
+        </Select>
         {entryType === "HealthCheck" && (
           <HealthCheck
             onHealthCheckRatingChange={onHealthCheckRatingChange}
@@ -211,6 +268,6 @@ export default AddEntryForm;
   description: string;
   date: string;
   specialist: string;
-  diagnosisCodes?: Array<Diagnosis["code"]>;
+  diagnoses?: Array<Diagnosis["code"]>;
   add on the healthCheckRating which can be a number from 0 to 3
 } */

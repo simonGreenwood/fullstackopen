@@ -4,7 +4,6 @@ import { Patient, EntryFormValues } from "../../types";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Typography, Alert } from "@mui/material";
-
 import GenderIcon from "./GenderIcon";
 import Entries from "./AllEntries";
 
