@@ -11,6 +11,7 @@ import {
   OutlinedInput,
   Box,
   Chip,
+  useTheme,
 } from "@mui/material";
 
 import {
@@ -31,9 +32,20 @@ interface Props {
   onCancel: () => void;
   onSubmit: (values: EntryFormValues) => void;
 }
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const typeOptions = ["HealthCheck", "OccupationalHealthcare", "Hospital"];
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
+  const theme = useTheme();
   const [selectedDiagnoses, setSelectedDiagnoses] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -213,6 +225,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           value={selectedDiagnoses}
           onChange={handleDiagnosesChange}
           input={<OutlinedInput label="Name" />}
+          MenuProps={MenuProps}
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
               {selected.map((value) => {
@@ -223,12 +236,9 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         >
           {diagnoses &&
             diagnoses.map((diagnosis) => (
-              <MenuItem
-                key={diagnosis.code}
-                value={diagnosis.name}
-                color="primary"
-              >
-                {diagnosis.code} {diagnosis.name}
+              <MenuItem key={diagnosis.code} value={diagnosis.name}>
+                {diagnosis.code} {diagnosis.name}{" "}
+                {selectedDiagnoses.indexOf(diagnosis.code) === -1}
               </MenuItem>
             ))}
         </Select>
