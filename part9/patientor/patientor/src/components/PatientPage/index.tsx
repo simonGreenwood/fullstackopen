@@ -47,6 +47,7 @@ const PatientPage = () => {
           console.error(message);
           setErrorWithTimeout(message);
         } else {
+          console.log(e);
           setErrorWithTimeout("Unrecognized axios error");
         }
       } else {
