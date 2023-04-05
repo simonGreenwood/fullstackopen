@@ -174,51 +174,27 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         </Select>
         <InputLabel style={{ marginTop: 20 }}>General info</InputLabel>
         <TextField
-          label="Description"
           fullWidth
+          required={true}
           value={description}
           onChange={({ target }) => setDescription(target.value)}
         />
+        <InputLabel style={{ marginTop: 8 }}>Date</InputLabel>
         <TextField
-          label="Date"
-          placeholder="YYYY-MM-DD"
           fullWidth
           value={date}
+          type={"date"}
+          required={true}
           onChange={({ target }) => setDate(target.value)}
         />
+        <InputLabel style={{ marginTop: 8 }}>Specialist</InputLabel>
         <TextField
-          label="Specialist"
           fullWidth
           value={specialist}
+          required={true}
           onChange={({ target }) => setSpecialist(target.value)}
         />
-        {/*
-        <Select
-          fullWidth
-          multiple
-          value={selectedDiagnoses}
-          renderValue={(selected) => (
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-              {selected.map((value) => {
-                console.log(value);
-                return <Chip key={value.code} label={value.code} />;
-              })}
-            </Box>
-          )}
-          onChange={handleDiagnosesChange}
-          input={
-            <OutlinedInput id="select-multiple-chip" label="Diagnosis codes" />
-          }
-        >
-          {diagnoses &&
-            diagnoses.map((d) => {
-              return (
-                <MenuItem key={d.code} value={d.code}>
-                  {d.code} - {d.name}
-                </MenuItem>
-              );
-            })}
-          </Select> */}
+        <InputLabel style={{ marginTop: 8 }}>Diagnosis codes</InputLabel>
         <Select
           fullWidth
           multiple

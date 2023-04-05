@@ -7,11 +7,12 @@ interface HospitalProps {
 const Hospital = (props: HospitalProps) => {
   return (
     <div>
-      <InputLabel style={{ marginTop: 20 }}>Discharge date</InputLabel>
+      <InputLabel style={{ marginTop: 8 }}>Discharge date</InputLabel>
       <TextField
-        label="Date"
         placeholder="YYYY-MM-DD"
         fullWidth
+        type={"date"}
+        required={true}
         value={props.discharge.date}
         onChange={({ target }) =>
           props.setDischarge({ ...props.discharge, date: target.value })
@@ -19,8 +20,8 @@ const Hospital = (props: HospitalProps) => {
       />
       <InputLabel style={{ marginTop: 8 }}>Discharge criteria</InputLabel>
       <TextField
-        label="Criteria"
         fullWidth
+        required={true}
         value={props.discharge.criteria}
         onChange={({ target }) =>
           props.setDischarge({ ...props.discharge, criteria: target.value })

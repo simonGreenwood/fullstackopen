@@ -24,7 +24,7 @@ interface HealthCheckProps {
 const HealthCheck = (props: HealthCheckProps) => {
   return (
     <div>
-      <InputLabel style={{ marginTop: 20 }}>Health check rating</InputLabel>
+      <InputLabel style={{ marginTop: 8 }}>Health check rating</InputLabel>
       <Select
         label="Health check rating"
         fullWidth

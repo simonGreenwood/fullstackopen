@@ -9,27 +9,34 @@ interface OccupationalHealthcareProps {
 const OccupationalHealthcare = (props: OccupationalHealthcareProps) => {
   return (
     <div>
-      <InputLabel style={{ marginTop: 20 }}>Employer</InputLabel>
+      <InputLabel style={{ marginTop: 8 }}>Employer</InputLabel>
       <TextField
         label="Employer"
         placeholder="Employer"
         fullWidth
+        required={true}
         value={props.employer}
         onChange={({ target }) => props.setEmployer(target.value)}
       />
-      <InputLabel style={{ marginTop: 8 }}>Sick Leave (optional)</InputLabel>
+      <InputLabel style={{ marginTop: 8 }}>
+        <u>Sick Leave (optional)</u>
+      </InputLabel>
+      <InputLabel size={"small"} style={{ paddingBottom: "1em" }}>
+        Start date
+      </InputLabel>
       <TextField
-        label="Start date"
-        placeholder="YYYY-MM-DD"
+        type={"date"}
         fullWidth
         value={props.sickLeave.startDate}
         onChange={({ target }) =>
           props.setSickLeave({ ...props.sickLeave, startDate: target.value })
         }
       />
+      <InputLabel size={"small"} style={{ paddingBottom: "1em" }}>
+        End date
+      </InputLabel>
       <TextField
-        label="End date"
-        placeholder="YYYY-MM-DD"
+        type={"date"}
         fullWidth
         value={props.sickLeave.endDate}
         onChange={({ target }) =>
