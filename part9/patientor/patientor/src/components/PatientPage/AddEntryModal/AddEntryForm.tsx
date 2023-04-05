@@ -34,8 +34,7 @@ interface Props {
 
 const typeOptions = ["HealthCheck", "OccupationalHealthcare", "Hospital"];
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
-  const [selectedDiagnoses, setSelectedDiagnoses] = useState<Diagnosis[]>([]);
-
+  const [selectedDiagnoses, setSelectedDiagnoses] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
@@ -127,14 +126,21 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     event: SelectChangeEvent<typeof selectedDiagnoses>
   ) => {
     if (!diagnoses) return;
-    console.log(diagnoses, event.target.value[0]);
     const diagnosisToAdd = diagnoses.find(
-      (diagnosis) => diagnosis.code === event.target.value[0]
+      (diagnosis) =>
+        diagnosis.name === event.target.value[event.target.value.length - 1]
     );
-    console.log(diagnosisToAdd);
-    if (!diagnosisToAdd) return;
-    setSelectedDiagnoses(selectedDiagnoses.concat(diagnosisToAdd));
-    console.log(selectedDiagnoses, diagnoses);
+    if (!diagnosisToAdd) {
+      console.log("error with the diagnosis");
+      return;
+    }
+    setSelectedDiagnoses(selectedDiagnoses.concat(diagnosisToAdd.code));
+    if (selectedDiagnoses.includes(diagnosisToAdd.code)) {
+      const filtered = selectedDiagnoses.filter(
+        (d) => d !== diagnosisToAdd.code
+      );
+      setSelectedDiagnoses(filtered);
+    }
   };
   return (
     <div>
@@ -207,10 +213,21 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           value={selectedDiagnoses}
           onChange={handleDiagnosesChange}
           input={<OutlinedInput label="Name" />}
+          renderValue={(selected) => (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((value) => {
+                return <Chip key={value} label={value} color="primary" />;
+              })}
+            </Box>
+          )}
         >
           {diagnoses &&
             diagnoses.map((diagnosis) => (
-              <MenuItem key={diagnosis.code} value={diagnosis.name}>
+              <MenuItem
+                key={diagnosis.code}
+                value={diagnosis.name}
+                color="primary"
+              >
                 {diagnosis.code} {diagnosis.name}
               </MenuItem>
             ))}
