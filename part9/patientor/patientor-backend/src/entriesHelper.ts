@@ -66,14 +66,14 @@ export const parseSickLeave = (leave: unknown) => {
   if (!("endDate" in leave)) {
     throw new Error("sick leave doesn't contain end date");
   }
-  if (
-    !leave.startDate ||
-    !isString(leave.startDate) ||
-    !isDate(leave.startDate)
-  ) {
+  console.log(leave);
+  if (leave.startDate === "" && leave.endDate === "") {
+    return undefined;
+  }
+  if (!isString(leave.startDate) || !isDate(leave.startDate)) {
     throw new Error("sick leave start date is not a date");
   }
-  if (!leave.endDate || !isString(leave.endDate) || !isDate(leave.endDate)) {
+  if (!isString(leave.endDate) || !isDate(leave.endDate)) {
     throw new Error("sick leave end date is not a date");
   }
   return leave as SickLeave;
