@@ -179,6 +179,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           value={description}
           onChange={({ target }) => setDescription(target.value)}
         />
+
         <InputLabel style={{ marginTop: 8 }}>Date</InputLabel>
         <TextField
           fullWidth
