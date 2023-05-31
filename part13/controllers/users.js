@@ -1,6 +1,5 @@
 const router = require("express").Router()
 
-const { NotBeforeError } = require("jsonwebtoken")
 const { User, Note } = require("../models")
 const { SECRET } = require("../util/config")
 
@@ -16,7 +15,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const user = await User.findByPk(req.decodedToken.id)
+    const user = await User.create(req.body)
     res.json(user)
   } catch (error) {
     return res.status(400).json({ error })
