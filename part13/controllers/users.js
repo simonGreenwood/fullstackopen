@@ -70,20 +70,20 @@ router.get("/:id", async (req, res) => {
         },
         include: { model: User, attributes: ["name", "username"] },
       },
-      {
-        model: Team,
-        attributes: ["name", "id"],
-        through: {
-          attributes: [],
-        },
-      },
     ],
   });
-  if (user) {
-    res.json(user);
-  } else {
+  if (!user) {
     res.status(404).end();
   }
+
+  let teams = undefined;
+  if (req.query.teams) {
+    teams = await user.getTeams({
+      attributes: ["name"],
+      joinTableAttributes: [],
+    });
+  }
+  res.json({ ...user.toJSON(), teams });
 });
 
 module.exports = router;
